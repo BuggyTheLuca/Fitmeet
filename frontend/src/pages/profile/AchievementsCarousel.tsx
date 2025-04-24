@@ -2,6 +2,8 @@ import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Achievement } from "@/types/user";
 import achievementIcon from '../../assets/images/achievement-icon.svg'
+import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
+import { TooltipTrigger } from "@radix-ui/react-tooltip";
 
 export function AchievementsCarousel({ achievements }: { achievements: Achievement[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -31,9 +33,21 @@ export function AchievementsCarousel({ achievements }: { achievements: Achieveme
       >
         {achievements.map((achievement, index) => (
           <div key={index} className="mx-4 flex flex-col items-center w-24">
-            <img src={achievementIcon} alt={`Conquista ${achievement.name}`} className="w-22 h-22 object-cover rounded" />
-            <h2>{achievement.name}</h2>
-          </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <img
+                  src={achievementIcon}
+                  alt={`Conquista ${achievement.name}`}
+                  className="w-22 h-22 object-cover rounded cursor-pointer"
+                />
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                {achievement.criterion}
+              </TooltipContent>
+            </Tooltip>
+        
+          <h2>{achievement.name}</h2>
+        </div>
         ))}
       </div>
 

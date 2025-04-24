@@ -30,6 +30,7 @@ export interface ActivityResponse{
     scheduledDate: string, 
     createdAt: string, 
     completedAt: string, 
+    deletedAt: string,
     private: boolean, 
     creator: { 
       id: string, 

@@ -1,6 +1,5 @@
 import useAuth from "./useAuth";
 import { useCallback } from "react";
-import { LoggedUser } from "../types/user";
 import { Pageable } from "../types/pageable";
 import { createActivity,
          getAllActivityTypes,
@@ -12,7 +11,8 @@ import { createActivity,
          subscribeInActivity,
          checkInToActivity,
          unsubscribeFromActivity, 
-         deactivateActivity} from "../services/activityService";
+         deactivateActivity,
+         approveParticipant} from "../services/activityService";
 
 export function useActivity() {
     const {loggedUser} = useAuth();
@@ -93,6 +93,13 @@ export function useActivity() {
       return await deactivateActivity(loggedUser, activityId)
     }, [loggedUser])
 
+    const approve = useCallback(async (activityId: string, approveRequest: any) => {
+      if (!loggedUser) return;
+  
+      return await approveParticipant(loggedUser, activityId, approveRequest)
+
+    }, [loggedUser])
+
     return {
         getActivityTypes,
         setNewActivity,
@@ -104,6 +111,7 @@ export function useActivity() {
         subscribe,
         unsubscribe,
         checkIn,
-        deleteActivity
+        deleteActivity,
+        approve
     }
 }
