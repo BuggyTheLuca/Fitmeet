@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useActivity } from "@/hooks/useActivity";
 import { useUser } from "@/hooks/useUser";
 import { DialogClose } from "@radix-ui/react-dialog";
+import { VisuallyHidden } from "@/components/common/VisuallyHidden";
 
 export function EditPreferences({ closeModal }: {closeModal: (newPreferences: Preference[] | string[]) => void}) {
   const [activityTypes, setActivityTypes] = useState<ActivityType[] | null>(null);
@@ -53,6 +54,9 @@ export function EditPreferences({ closeModal }: {closeModal: (newPreferences: Pr
         </DialogClose>
         <DialogHeader>
           <DialogTitle>Selecione as suas atividades preferidas</DialogTitle>
+          <VisuallyHidden>
+            <DialogDescription>Selecione as suas atividades preferidas</DialogDescription>
+          </VisuallyHidden>
         </DialogHeader>
 
         <div className="space-y-4">
