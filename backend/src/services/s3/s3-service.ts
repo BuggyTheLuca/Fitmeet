@@ -72,11 +72,17 @@ async function deletePreviousFile (file: Express.Multer.File, bucketName: string
 
 
 export async function uploadDefaultImages () {
-    const userFilePath = path.join(__dirname, "../../../resources/images/default-avatar.jpg");
+    const userFilePath = path.join(__dirname, "../../../resources/images/default-avatar.png");
     const userFileStream = fs.createReadStream(userFilePath);
 
-    const activityTypeFilePath = path.join(__dirname, "../../../resources/images/default-activity-type-image.jpg");
-    const activityTypeFileStream = fs.createReadStream(activityTypeFilePath);
+    const strengthFilePath = path.join(__dirname, "../../../resources/images/strength.jpg");
+    const strengthFileStream = fs.createReadStream(strengthFilePath);
+    const aerobicFilePath = path.join(__dirname, "../../../resources/images/aerobic.jpg");
+    const aerobicFileStream = fs.createReadStream(aerobicFilePath);
+    const balanceFilePath = path.join(__dirname, "../../../resources/images/balance.jpg");
+    const balanceFileStream = fs.createReadStream(balanceFilePath);
+    const flexibilityFilePath = path.join(__dirname, "../../../resources/images/flexibility.jpg");
+    const flexibilityFileStream = fs.createReadStream(flexibilityFilePath);
   
     const userUploadParams = {
       Bucket: userBucketName,
@@ -85,16 +91,40 @@ export async function uploadDefaultImages () {
       ContentType: "image/jpeg",
     };
 
-    const activityTypeUploadParams = {
+    const strengthUploadParams = {
         Bucket: activityTypeBucketName,
-        Key: "default-activity-type-image.jpg",
-        Body: activityTypeFileStream,
+        Key: "strength-image.jpg",
+        Body: strengthFileStream,
+        ContentType: "image/jpeg",
+    };
+
+    const aerobicUploadParams = {
+        Bucket: activityTypeBucketName,
+        Key: "aerobic-image.jpg",
+        Body: aerobicFileStream,
+        ContentType: "image/jpeg",
+    };
+
+    const balanceUploadParams = {
+        Bucket: activityTypeBucketName,
+        Key: "balance-image.jpg",
+        Body: balanceFileStream,
+        ContentType: "image/jpeg",
+    };
+
+    const flexibilityUploadParams = {
+        Bucket: activityTypeBucketName,
+        Key: "flexibility-image.jpg",
+        Body: flexibilityFileStream,
         ContentType: "image/jpeg",
     };
 
     await s3.send(new PutObjectCommand(userUploadParams));
-    console.log(`Default user avatar uploaded to ${process.env.S3_ENDPOINT}/${userBucketName}/default-avatar.jpg`)
-    await s3.send(new PutObjectCommand(activityTypeUploadParams));
-    console.log(`Default activity type image uploaded to ${process.env.S3_ENDPOINT}/${activityTypeBucketName}/default-activity-type-image.jpg`)
+    console.log(`Default user avatar uploaded to ${process.env.S3_ENDPOINT}/${userBucketName}`)
+    await s3.send(new PutObjectCommand(strengthUploadParams));
+    await s3.send(new PutObjectCommand(balanceUploadParams));
+    await s3.send(new PutObjectCommand(aerobicUploadParams));
+    await s3.send(new PutObjectCommand(flexibilityUploadParams));
+    console.log(`Default activity type image uploaded to ${process.env.S3_ENDPOINT}/${activityTypeBucketName}`)
   
   }
