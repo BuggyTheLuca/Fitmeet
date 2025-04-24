@@ -79,7 +79,7 @@ export async function findUserPreferences(userId: string) {
     }
   })
 
-  return preferences.map(({type}) => type);
+  return preferences.map(({type}) => ({typeId: type.id, typeDescription: type.description, typeName: type.name}));
 }
 
 export async function updateUserData(id: string, updateUser: UpdateUserRequest){
