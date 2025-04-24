@@ -39,7 +39,7 @@ export async function getUserData(loggedUser: LoggedUser){
     });
 
     const userRes: UserResponse = await res.json()
-    return { status: res.status, userRes}
+    return { status: res.status, user: userRes}
 }
 
 export async function setUserAvatar(loggedUser: LoggedUser, avatar: FormData){

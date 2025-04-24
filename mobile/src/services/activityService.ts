@@ -1,5 +1,5 @@
 import { apiUrl } from "../consts/api";
-import { ActivityType } from "../types/activity";
+import { ActivityResponse, ActivityType } from "../types/activity";
 import { ActivityPage, Pageable } from "../types/pageable";
 import { LoggedUser, Participant } from "../types/user";
 
@@ -37,8 +37,8 @@ export async function updateActivityData(loggedUser: LoggedUser, activity: FormD
         body: activity
     });
 
-    const response = await res.json()
-    return { status: res.status, error: response.error}
+    const activityResponse: ActivityResponse = await res.json()
+    return { status: res.status, activity: activityResponse}
 }
 
 export async function getParticipantsByActivityId(loggedUser: LoggedUser, activityId: string){
@@ -122,11 +122,12 @@ export async function subscribeInActivity(loggedUser: LoggedUser, activityId: st
 
 export async function checkInToActivity(loggedUser: LoggedUser, activityId: string, confirmationCode: string){
     const res = await fetch(`${apiUrl}/activities/${activityId}/check-in`, {
-        method: "POST",
+        method: "PUT",
         headers: {
-            Authorization: loggedUser?.token
+            Authorization: loggedUser?.token,
+          "Content-Type": "application/json"
         },
-        body: confirmationCode
+        body: JSON.stringify({confirmationCode: confirmationCode})
     });
 
     const participant: Participant = await res.json();
@@ -155,4 +156,19 @@ export async function deactivateActivity(loggedUser: LoggedUser, activityId: str
 
     const response = await res.json();
     return { status: res.status, response };
+}
+
+export async function approveParticipant(loggedUser: LoggedUser, activityId: string, approve: any){
+    console.log(approve, activityId)
+    const res = await fetch(`${apiUrl}/activities/${activityId}/approve`, {
+        method: "PUT",
+        headers: {
+          Authorization: loggedUser?.token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(approve)
+    });
+
+    const activityResponse: ActivityResponse = await res.json()
+    return { status: res.status, activity: activityResponse}
 }
