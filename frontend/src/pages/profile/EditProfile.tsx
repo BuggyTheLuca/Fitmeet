@@ -112,11 +112,12 @@ export function EditProfile() {
 
   const onSubmit = async (data: FormData) => {
     const avatarForm = new FormData();
-    const userForm = new FormData();
-    
-    userForm.append("name", data.name);
-    userForm.append("email", data.email);
-    userForm.append("password", data.password);
+    const userData = {
+        name: data.name,
+        email: data.email,
+        password: data.password
+    };
+
     let avatarResponse;
     if(imageFile){
         avatarForm.append("avatar", imageFile);
@@ -125,7 +126,7 @@ export function EditProfile() {
 
     await setPreferences(preferences)
 
-    const userResponse = await updateUser(userForm)
+    const userResponse = await updateUser(userData)
 
     if(userResponse?.status == 200 && (!imageFile || avatarResponse?.status == 200)){
         if(loggedUser)

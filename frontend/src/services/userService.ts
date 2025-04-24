@@ -55,13 +55,14 @@ export async function setUserAvatar(loggedUser: LoggedUser, avatar: FormData){
       return { status: res.status, error: response.error}
 }
 
-export async function updateUserData(loggedUser: LoggedUser, userUpdated: FormData){
+export async function updateUserData(loggedUser: LoggedUser, userUpdated: any){
     const res = await fetch(`${apiUrl}/user/update`, {
         method: "PUT",
         headers: {
+          "Content-Type": "application/json",
           Authorization: loggedUser?.token
         },
-        body: userUpdated
+        body: JSON.stringify(userUpdated)
       });
 
       const response: UserResponse = await res.json()

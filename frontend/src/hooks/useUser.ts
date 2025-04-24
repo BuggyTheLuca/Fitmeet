@@ -41,7 +41,7 @@ export function useUser() {
       
     }, [loggedUser])
 
-    const updateUser = useCallback(async (userUpdated: FormData) => {
+    const updateUser = useCallback(async (userUpdated: any) => {
       if (!loggedUser) return;
       
       return await updateUserData(loggedUser, userUpdated)
