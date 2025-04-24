@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { ActivityResponse, ActivityType } from "@/types/activity";
 import { Button } from "@/components/ui/button";
 import { useActivity } from "@/hooks/useActivity";
@@ -107,6 +107,7 @@ export function EditActivity({ activity, closeModal }: {activity: ActivityRespon
         </DialogClose>
         <DialogHeader>
           <DialogTitle>Editar atividade</DialogTitle>
+          <DialogDescription>Editar atividade</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>

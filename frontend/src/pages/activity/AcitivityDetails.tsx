@@ -149,8 +149,8 @@ export function ActivityDetails({ activity, closeModal }: {activity: ActivityRes
         </DialogClose>
         <VisuallyHidden>
           <DialogTitle>Detalhes da atividade</DialogTitle>
+          <DialogDescription>Detalhes da atividade</DialogDescription>
         </VisuallyHidden>
-        <DialogDescription>Detalhes da atividade</DialogDescription>
         <div className="space-y-4 flex justify-between items-start gap-x-2">
           <div className="flex flex-col justify-between h-full gap-10">
               <div>
