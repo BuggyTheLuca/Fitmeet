@@ -30,3 +30,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  backend:
+    container_name: backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
