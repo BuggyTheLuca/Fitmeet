@@ -5,15 +5,15 @@
  * @format
  */
 
+import { AppStateProvider } from "./src/contexts/AppState";
 import AppRoutes from "./src/routes/AppRoutes";
 
 function App(): React.JSX.Element {
-  
-
   return (
-    <AppRoutes/>
+    <AppStateProvider>
+      <AppRoutes/>
+    </AppStateProvider>
   );
 }
-
 
 export default App;

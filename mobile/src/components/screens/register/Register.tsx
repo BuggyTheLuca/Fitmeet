@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import AuthBackground from "../../commons/authBackground/AuthBackground";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCustomNavigation } from "../../../hooks/useCustomNavigation";
+import { CustomInput } from "../../commons/CustomInput";
+import { Dimensions } from 'react-native';
+import { defaultStyles } from "../../../styles/defaultStyles";
+import { CustomButton } from "../../commons/CustomButton";
+
+const { width } = Dimensions.get('window');
 
 export default function Register(){
     const [name, setName] = useState('');
@@ -21,73 +26,63 @@ export default function Register(){
 
     return (
         <>
-            <AuthBackground>
-                <SafeAreaView style={styles.container}>
-                    <View style={styles.form}>
-                    <Text>Nome:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Digite seu nome"
-                        value={name}
-                        onChangeText={setName}
-                    />
-
-                    <Text>CPF:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Digite seu CPF"
-                        value={cpf}
-                        onChangeText={setCPF}
-                    />
-
-                    <Text>Email:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Digite seu email"
-                        keyboardType="email-address"
-                        value={email}
-                        onChangeText={setEmail}
-                    />
-
-                    <Text>Senha:</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Digite seu nome"
-                        value={password}
-                        keyboardType='visible-password'
-                        onChangeText={setPassword}
-                    />
-
-                    <Button title="Cadastrar" onPress={handleSubmit} />
-
-                    <Button title="Já possui uma conta" onPress={() => navigation.navigate('Login')} />
+            <SafeAreaView style={defaultStyles.screen}>
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <View style={{flexDirection: 'row', width: '100%', justifyContent: 'flex-start'}}>
+                            <Text style={{fontWeight: "bold", fontSize: 40}} onPress={() => navigation.navigate('Login')}>
+                                {'<'}
+                            </Text>
+                        </View>
+                        <Text style={defaultStyles.title}>
+                            Crie Sua Conta
+                        </Text>
+                        <Text>
+                            Por favor preencha os dados para  prosseguir!
+                        </Text>
                     </View>
-                </SafeAreaView>
-            </AuthBackground>
+                    <View style={styles.form}>
+                        
+                        <CustomInput label="Nome: " value={name} onChangeText={setName}/>
+                        
+                        <CustomInput label="Cpf: " value={cpf} onChangeText={setCPF}/>
+
+                        <CustomInput label="Email: " value={email} onChangeText={setEmail}/>
+
+                        <CustomInput label="Senha: " value={password} onChangeText={setPassword} secureTextEntry={true}/>
+
+                        <CustomButton onClick={handleSubmit} text="Cadastrar" type="primary"/>
+                        
+                        <Text>
+                            Já possui conta?{" "}
+                            <Text style={{fontWeight: "bold"}} onPress={() => navigation.navigate('Login')}>
+                                Login
+                            </Text>
+                        </Text>
+                    </View>
+                </View>
+            </SafeAreaView>
         </>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        paddingTop: 20,
+        width: width * 0.9
+    },
+    header: {
+        width: '100%',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        gap: 12,
+        marginBottom: 20
     },
     form: {
-        backgroundColor: 'white',
-        minHeight: '70%',
-        minWidth: '70%',
+        width: '100%',  
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'space-around'
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 6,
-        padding: 8,
-        marginBottom: 12,
-      },
+        justifyContent: 'space-around',
+        gap: 12
+    }
 })

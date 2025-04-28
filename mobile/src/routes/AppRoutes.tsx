@@ -2,7 +2,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import Login from "../components/screens/login/Login";
-import AuthBackground from "../components/commons/authBackground/AuthBackground";
 import Register from "../components/screens/register/Register";
 
 export type MainStackParamList = {
