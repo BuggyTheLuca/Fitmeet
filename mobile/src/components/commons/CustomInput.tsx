@@ -2,9 +2,9 @@ import React from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
 interface Props {
-  label: string;
   value: string;
   onChangeText: (text: string) => void;
+  label?: string;
   placeholder?: string;
   secureTextEntry?: boolean;
 }
@@ -12,7 +12,7 @@ interface Props {
 export function CustomInput({ label, value, onChangeText, placeholder, secureTextEntry }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      {label ? <Text style={styles.label}>{label}</Text> : null}
       <TextInput
         style={styles.input}
         value={value}

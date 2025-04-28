@@ -8,9 +8,7 @@ interface props {
     type?: 'default' | 'danger' | 'primary'
 }
 
-export function CustomButton({onClick, type, text}: props){
-
-    type = type ?? 'default';
+export function CustomButton({onClick, type = 'default', text}: props){
 
     const styles = StyleSheet.create({
         button: {
