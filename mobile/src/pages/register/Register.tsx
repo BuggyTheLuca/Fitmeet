@@ -7,6 +7,7 @@ import { Dimensions } from 'react-native';
 import { defaultStyles } from "../../styles/defaultStyles";
 import { CustomButton } from "../../components/commons/CustomButton";
 import PreviousViewNav from "../../components/commons/PreviousViewNav";
+import useAuth from "../../hooks/useAuth";
 
 const { width } = Dimensions.get('window');
 
@@ -16,14 +17,21 @@ export default function Register(){
     const [cpf, setCPF] = useState('');
     const [password, setPassword] = useState('');
 
-    
-
+    const {registerUser} = useAuth();
     
     const navigation = useCustomNavigation()
 
     const handleSubmit = () => {
-        console.log('Nome:', name);
-        console.log('Email:', email);
+        const data = {
+            name, cpf, email, password
+        }
+
+        registerUser(data).then(
+            (data) => {
+                console.log(data)
+            }
+        )
+
     };
 
 

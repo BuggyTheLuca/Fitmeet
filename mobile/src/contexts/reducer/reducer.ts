@@ -1,3 +1,4 @@
+import { login } from "../../services/authService";
 import { AppState } from "../state/state";
 
 
@@ -12,12 +13,14 @@ interface Action {
 }
 
 export const reducer = (state: AppState, action: Action) => {
+
     switch (action.type) {
         case ActionTypes.LOGIN:
             return {
                 ...state,
                 auth: {
                     ...state.auth,
+                    loggedUser: login(action.payload),
                     isAuthenticated: true
                 }
             }

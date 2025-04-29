@@ -1,8 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import Login from "../components/screens/login/Login";
-import Register from "../components/screens/register/Register";
+import Login from "../pages/login/Login";
+import Register from "../pages/register/Register";
 
 export type MainStackParamList = {
     Login: undefined;

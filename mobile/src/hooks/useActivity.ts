@@ -1,4 +1,3 @@
-import useAuth from "./useAuth";
 import { useCallback } from "react";
 import { Pageable } from "../types/pageable";
 import { createActivity,
@@ -13,9 +12,10 @@ import { createActivity,
          unsubscribeFromActivity, 
          deactivateActivity,
          approveParticipant} from "../services/activityService";
+import useAppContext from "./useAppContext";
 
 export function useActivity() {
-    const {loggedUser} = useAuth();
+  const {auth: {loggedUser}} = useAppContext();
 
 
     const getActivityTypes = useCallback(async () => {

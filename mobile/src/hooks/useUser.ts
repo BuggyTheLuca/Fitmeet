@@ -1,4 +1,3 @@
-import useAuth from "./useAuth";
 import { useCallback } from "react";
 import { deactivateUser,
          getUserData,
@@ -6,11 +5,12 @@ import { deactivateUser,
          setUserAvatar,
          setUserPreferences,
          updateUserData } from "../services/userService";
+import useAppContext from "./useAppContext";
 
 
 export function useUser() {
     
-    const {loggedUser} = useAuth();
+    const {auth: {loggedUser}} = useAppContext();
 
     const getPreferences = useCallback(async () => {
       if (!loggedUser) return;

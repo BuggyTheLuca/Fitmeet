@@ -1,12 +1,22 @@
-import { useContext } from "react";
-import { AuthContext } from "../contexts/authContext";
+import { useCallback } from "react";
+import { login, register } from "../services/authService";
 
 export function useAuth() {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth precisa estar dentro de um AuthProvider");
+
+    const registerUser = useCallback(async (data: any) => {
+      return await register(data)
+
+    }, []);
+
+    const effectuateLogin = useCallback(async (data: any) => {
+        return await login(data)
+  
+      }, []);
+
+    return {
+        registerUser,
+        effectuateLogin
     }
-    return context;
 }
 
 export default useAuth;

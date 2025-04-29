@@ -17,12 +17,11 @@ export default function Login(){
     const [password, setPassword] = useState('');
     const navigation = useCustomNavigation()
 
-    const {auth: {login, isAuthenticated}} = useAppContext()
+    const {auth: {login, loggedUser}} = useAppContext()
 
     const handleSubmit = () => {
-        console.log('Nome:', email);
-        console.log('password:', password);
         login(email, password)
+        console.log(loggedUser)
     };
 
 
@@ -31,7 +30,7 @@ export default function Login(){
             <SafeAreaView style={defaultStyles.screen}>
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <Image source={require('../../../assets/images/Logo.png')} style={{marginBottom: 20}}/>
+                        <Image source={require('../../assets/images/Logo.png')} style={{marginBottom: 20}}/>
                         <Text style={defaultStyles.title}>
                             Faça Login e comece a treinar
                         </Text>
