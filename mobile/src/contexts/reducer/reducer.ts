@@ -1,4 +1,3 @@
-import { login } from "../../services/authService";
 import { AppState } from "../state/state";
 
 
@@ -20,8 +19,8 @@ export const reducer = (state: AppState, action: Action) => {
                 ...state,
                 auth: {
                     ...state.auth,
-                    loggedUser: action.payload.user,
-                    isAuthenticated: true,
+                    loggedUser: action.payload.loggedUser,
+                    isAuthenticated: action.payload.isAuthenticated,
                 }
             }
         case ActionTypes.LOGOUT:

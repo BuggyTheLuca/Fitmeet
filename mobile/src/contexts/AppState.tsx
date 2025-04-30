@@ -2,6 +2,7 @@ import { createContext, ReactNode, useCallback, useReducer } from "react";
 import { ActionTypes, reducer } from "./reducer/reducer";
 import { AppState, initialState } from "./state/state";
 import useAuth from "../hooks/useAuth";
+import { showErrorToast } from "../services/toastService/toastService";
 
 
 
@@ -26,23 +27,28 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
             };
 
             const responseData: any = await effectuateLogin(data)
-            const user = {
-                id: responseData.id,
-                name: responseData.name,
-                email: responseData.email,
-                cpf: responseData.cpf,
-                avatar: responseData.avatar,
-                xp: responseData.xp,
-                level: responseData.level,
-                achievements: responseData.achievements
+            if(responseData.error){
+                dispatch({ type: ActionTypes.LOGIN, payload: { token: responseData.token, loggedUser: undefined, isAuthenticated: false } });
+                showErrorToast('Erro no login', responseData.error)
+                throw(responseData)
+            } else {
+                const loggedUser = {
+                    id: responseData.id,
+                    name: responseData.name,
+                    email: responseData.email,
+                    cpf: responseData.cpf,
+                    avatar: responseData.avatar,
+                    xp: responseData.xp,
+                    level: responseData.level,
+                    achievements: responseData.achievements
+                }
+                dispatch({ type: ActionTypes.LOGIN, payload: { token: responseData.token, user: loggedUser , isAuthenticated: true} });
             }
-            dispatch({ type: ActionTypes.LOGIN, payload: { token: responseData.token, user } });
 
         } catch (error: any) {
-            console.log(error.message);
+            console.log(error);
             throw error;
         }
-        dispatch({type: ActionTypes.LOGIN});
     },[])
 
     const logout = useCallback(() => {

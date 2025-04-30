@@ -23,9 +23,14 @@ export default function Login(){
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
 
+    
+    const [emailErrorText, setEmailErrorText] = useState('');
+    const [passwordErrorText, setPasswordErrorText] = useState('');
+
     const navigation = useCustomNavigation()
 
-    const {auth: {login, loggedUser}} = useAppContext()
+
+    const {auth: {login}} = useAppContext()
 
     async function handleSubmit() {
         try {
@@ -33,18 +38,31 @@ export default function Login(){
 
             if (!verifyEmail(email)) {
                 setEmailError(true);
+                setEmailErrorText('E-mail inválido!')
                 isError = true;
             }
             if (password.length < 6) {
                 setPasswordError(true);
+                setPasswordErrorText('Senha inválida!')
                 isError = true;
             }
             if (isError) return;
 
             login && await login(email, password)
 
+            navigation.navigate('Home')
+
+
         } catch (error: any) {
-            showErrorToast('Houve um Erro', error.message);
+            if(error.status == 401){
+                setPasswordError(true);
+                setPasswordErrorText(error.error)
+            }
+            if(error.status == 404){
+                setEmailError(true);
+                setEmailErrorText(error.error)
+            }
+            showErrorToast('Erro durante login', error.error);
         }
     };
 
@@ -75,7 +93,7 @@ export default function Login(){
                             placeholder='Ex.: nome@email.com'
                         />
                         <Input.ErrorMessage style={{ marginTop: 6 }}>
-                            Preencha o campo com seu e-mail!
+                            {emailErrorText}
                         </Input.ErrorMessage>
                     </Input.Root>
                     <Input.Root isError={passwordError}>
@@ -92,7 +110,7 @@ export default function Login(){
                             secureTextEntry={true}
                         />
                         <Input.ErrorMessage style={{ marginTop: 6 }}>
-                            Preencha com a senha!
+                            {passwordErrorText}
                         </Input.ErrorMessage>
                     </Input.Root>
 

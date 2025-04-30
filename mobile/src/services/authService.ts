@@ -11,20 +11,30 @@ export async function register(data: any) {
   
         const response: ResponseString = res.data
         return { status: res.status, ...response }
-    } catch (error) {
-        console.log(error)
-        throw(error)
+    } catch (error: any) {
+        if (error.response) {
+            const { status, data } = error.response;
+            return { status, ...data };
+        } else {
+            console.log('Erro sem resposta do servidor', error);
+            throw error;
+        }
     }
   }
 
   export async function login(data: any) {
     try {
-        console.log(data)
-        const res = await api.post(`/auth/login`, data)
+        const res = await api.post(`/auth/sign-in`, data)
   
         const loggedUser = res.data
         return { status: res.status, ...loggedUser }!
-    } catch (error) {
-        console.log(error)
+    } catch (error: any) {
+        if (error.response) {
+            const { status, data } = error.response;
+            return { status, ...data };
+        } else {
+            console.log('Erro sem resposta do servidor', error);
+            throw error;
+        }
     }
   }

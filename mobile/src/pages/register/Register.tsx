@@ -14,6 +14,7 @@ import CustomText from "../../components/CustomText/CustomText";
 import { formatCpfMask } from "../../utils/format-cpf-mask";
 import { verifyEmail } from "../../utils/verify-email";
 import { showErrorToast, showSuccessToast } from "../../services/toastService/toastService";
+import { validateCPF } from "../../utils/cpf-validator";
 
 const { width } = Dimensions.get('window');
 
@@ -49,6 +50,14 @@ export default function Register(){
             if (password.length < 6) {
                 setPasswordError(true);
                 isError = true;
+            }
+            if(!validateCPF(cpf)){
+                setCpfError(true);
+                isError = true
+            }
+            if(name.length < 1){
+                setNameError(true);
+                isError = true
             }
             if (isError) return;
             
@@ -97,7 +106,7 @@ export default function Register(){
                                 placeholder='Ex.: Jorge Pessoa'
                             />
                             <Input.ErrorMessage style={{ marginTop: 6 }}>
-                                Preencha o campo com seu nome!
+                                Nome obrigatório!
                             </Input.ErrorMessage>
                         </Input.Root>
                             
@@ -113,7 +122,7 @@ export default function Register(){
                                 placeholder='Ex.: 111.111.111-11'
                             />
                             <Input.ErrorMessage style={{ marginTop: 6 }}>
-                                Preencha o campo com sum CPF válido!
+                                CPF inválido!
                             </Input.ErrorMessage>
                         </Input.Root>
 
@@ -129,7 +138,7 @@ export default function Register(){
                                 placeholder='Ex.: nome@email.com'
                             />
                             <Input.ErrorMessage style={{ marginTop: 6 }}>
-                                Preencha o campo com seu e-mail!
+                                E-mail inválido!
                             </Input.ErrorMessage>
                         </Input.Root>
 
@@ -146,7 +155,7 @@ export default function Register(){
                                 secureTextEntry={true}
                             />
                             <Input.ErrorMessage style={{ marginTop: 6 }}>
-                                Preencha o campo com uma senha!
+                                Mínimo 6 caractéres!
                             </Input.ErrorMessage>
                         </Input.Root>
 
