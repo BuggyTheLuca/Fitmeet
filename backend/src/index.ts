@@ -4,7 +4,7 @@ import cors from 'cors';
 import routes from './routes/routes';
 import swagger from "swagger-ui-express";
 import docs from "./swagger.json";
-import { createBuckets, uploadDefaultImages } from './services/s3/s3-service';
+import { prepareBucketsAndDefaults } from './services/s3/s3-service';
 
 const port = process.env.PORT;
 const server = express();
@@ -22,5 +22,4 @@ routes(server);
 
 server.use("/documentation", swagger.serve, swagger.setup(docs));
 
-createBuckets();
-uploadDefaultImages();
+prepareBucketsAndDefaults()

@@ -128,3 +128,9 @@ export async function uploadDefaultImages () {
     console.log(`Default activity type image uploaded to ${process.env.S3_ENDPOINT}/${activityTypeBucketName}`)
   
   }
+
+
+export async function prepareBucketsAndDefaults(){
+    await createBuckets();
+    await uploadDefaultImages();
+}
