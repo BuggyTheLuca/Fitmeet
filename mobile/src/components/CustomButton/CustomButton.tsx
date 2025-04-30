@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import { colors } from "../../styles/colors";
+import { ButtonProps, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { colors } from "../../assets/styles/colors";
 
-interface props {
-    onClick: () => void,
-    text: string,
+interface props{
+    onClick?: () => void;
+    text?: string,
     type?: 'default' | 'danger' | 'primary'
 }
 
@@ -19,17 +19,17 @@ export function CustomButton({onClick, type = 'default', text}: props){
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: colors[type]
+            backgroundColor: type == 'default' ? colors.white : colors[type]
         },
         text: {
-            color: type == 'default' ? 'black' : 'white',
+            color: type == 'default' ? colors.darkGrey : colors.white,
             fontSize: 16,
             fontWeight: 700
         }
     })
 
     return (
-        <TouchableOpacity style={styles['button']} onPress={onClick}>
+        <TouchableOpacity style={styles.button} onPress={onClick}>
             <Text style={styles.text}>{text}</Text>
         </TouchableOpacity>
     )

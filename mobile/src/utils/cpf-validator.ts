@@ -1,14 +1,4 @@
-import { z } from "zod";
-
-export const cpfValidator = z.string()
-  .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, { message: 'CPF deve estar no formato XXX.XXX.XXX-XX' })
-  .refine((cpf) => {
-    return validateCPF(cpf);
-  }, {
-    message: 'CPF inválido',
-  });
-  
-function validateCPF(cpf: string): boolean {
+export function validateCPF(cpf: string): boolean {
 
     cpf = cpf.replace(/[^\d]+/g, '');
     

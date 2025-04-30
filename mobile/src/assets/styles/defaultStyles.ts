@@ -10,8 +10,4 @@ export const defaultStyles = StyleSheet.create({
         justifyContent: 'flex-start',
         backgroundColor: colors.default
     },
-    title: {
-        fontSize: 32,
-        fontWeight: 400
-    }
 })

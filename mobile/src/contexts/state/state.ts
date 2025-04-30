@@ -17,9 +17,7 @@ export const initialState: AppState = {
     auth: {
         loggedUser: undefined,
         isAuthenticated: false,
-        login: (email: string, password: string) => {
-            console.log({email, password})
-        },
+        login: (email: string, password: string) => {},
         logout: () => {},
         isLoading: false
     }

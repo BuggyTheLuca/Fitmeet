@@ -12,7 +12,7 @@ export function useAuth() {
         return await login(data)
   
       }, []);
-
+      
     return {
         registerUser,
         effectuateLogin

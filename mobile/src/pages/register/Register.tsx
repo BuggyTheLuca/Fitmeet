@@ -2,12 +2,18 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
-import { CustomInput } from "../../components/commons/CustomInput";
+import { Input } from "../../components/Input/Input";
 import { Dimensions } from 'react-native';
-import { defaultStyles } from "../../styles/defaultStyles";
-import { CustomButton } from "../../components/commons/CustomButton";
-import PreviousViewNav from "../../components/commons/PreviousViewNav";
+import { defaultStyles } from "../../assets/styles/defaultStyles";
+import { CustomButton } from "../../components/CustomButton/CustomButton";
+import PreviousViewNav from "../../components/PreviousViewNav/PreviousViewNav";
 import useAuth from "../../hooks/useAuth";
+import Title from "../../components/Title/Title";
+import KeyboardAvoidingContent from "../../components/KeyboardAvoidingContent/KeyboardAvoidingContent";
+import CustomText from "../../components/CustomText/CustomText";
+import { formatCpfMask } from "../../utils/format-cpf-mask";
+import { verifyEmail } from "../../utils/verify-email";
+import { showErrorToast, showSuccessToast } from "../../services/toastService/toastService";
 
 const { width } = Dimensions.get('window');
 
@@ -17,48 +23,132 @@ export default function Register(){
     const [cpf, setCPF] = useState('');
     const [password, setPassword] = useState('');
 
+    
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [cpfError, setCpfError] = useState(false);
+    const [nameError, setNameError] = useState(false);
+
     const {registerUser} = useAuth();
     
     const navigation = useCustomNavigation()
 
-    const handleSubmit = () => {
-        const data = {
-            name, cpf, email, password
-        }
+    async function handleSubmit() {
 
-        registerUser(data).then(
-            (data) => {
-                console.log(data)
+        try {
+            let isError = false;
+
+            const data = {
+                name, cpf, email, password
             }
-        )
+
+            if (!verifyEmail(email)) {
+                setEmailError(true);
+                isError = true;
+            }
+            if (password.length < 6) {
+                setPasswordError(true);
+                isError = true;
+            }
+            if (isError) return;
+            
+            registerUser(data).then(data => {
+                if(data.status == 201 && data.message){
+                    showSuccessToast('Sucesso', data.message)
+                    navigation.navigate('Login')
+                }else if (data.error){
+                    showErrorToast('Houve um Erro', data.error)
+                }
+            })
+
+        } catch (error: any) {
+            showErrorToast('Houve um Erro', error.message);
+        }
 
     };
 
 
     return (
-        <>
+        <KeyboardAvoidingContent>
             <SafeAreaView style={defaultStyles.screen}>
                 <View style={styles.container}>
                     <View style={styles.header}>
                         <View style={{flexDirection: 'row', width: '100%', justifyContent: 'flex-start'}}>
                             <PreviousViewNav/>
                         </View>
-                        <Text style={defaultStyles.title}>
+                        <Title>
                             Crie Sua Conta
-                        </Text>
-                        <Text>
+                        </Title>
+                        <CustomText>
                             Por favor preencha os dados para  prosseguir!
-                        </Text>
+                        </CustomText>
                     </View>
                     <View style={styles.form}>
                         
-                        <CustomInput label="Nome: " value={name} onChangeText={setName}/>
-                        
-                        <CustomInput label="Cpf: " value={cpf} onChangeText={setCPF}/>
+                        <Input.Root isError={nameError}>
+                            <Input.Label required>Nome</Input.Label>
+                            <Input.Input
+                                value={name}
+                                onChangeText={(text) => {
+                                    setName(text);
+                                    setNameError(false);
+                                }}
+                                autoCapitalize='none'
+                                placeholder='Ex.: Jorge Pessoa'
+                            />
+                            <Input.ErrorMessage style={{ marginTop: 6 }}>
+                                Preencha o campo com seu nome!
+                            </Input.ErrorMessage>
+                        </Input.Root>
+                            
+                        <Input.Root isError={cpfError}>
+                            <Input.Label required>CPF</Input.Label>
+                            <Input.Input
+                                value={cpf}
+                                onChangeText={(text) => {
+                                    setCPF(formatCpfMask(text));
+                                    setCpfError(false);
+                                }}
+                                autoCapitalize='none'
+                                placeholder='Ex.: 111.111.111-11'
+                            />
+                            <Input.ErrorMessage style={{ marginTop: 6 }}>
+                                Preencha o campo com sum CPF válido!
+                            </Input.ErrorMessage>
+                        </Input.Root>
 
-                        <CustomInput label="Email: " value={email} onChangeText={setEmail}/>
+                        <Input.Root isError={emailError}>
+                            <Input.Label required>E-mail</Input.Label>
+                            <Input.Input
+                                value={email}
+                                onChangeText={(text) => {
+                                    setEmail(text);
+                                    setEmailError(false);
+                                }}
+                                autoCapitalize='none'
+                                placeholder='Ex.: nome@email.com'
+                            />
+                            <Input.ErrorMessage style={{ marginTop: 6 }}>
+                                Preencha o campo com seu e-mail!
+                            </Input.ErrorMessage>
+                        </Input.Root>
 
-                        <CustomInput label="Senha: " value={password} onChangeText={setPassword} secureTextEntry={true}/>
+                        <Input.Root isError={passwordError}>
+                            <Input.Label required>Senha</Input.Label>
+                            <Input.Input
+                                value={password}
+                                onChangeText={(text) => {
+                                    setPassword(text);
+                                    setPasswordError(false);
+                                }}
+                                autoCapitalize='none'
+                                placeholder='Ex.: senhasenha'
+                                secureTextEntry={true}
+                            />
+                            <Input.ErrorMessage style={{ marginTop: 6 }}>
+                                Preencha o campo com uma senha!
+                            </Input.ErrorMessage>
+                        </Input.Root>
 
                         <CustomButton onClick={handleSubmit} text="Cadastrar" type="primary"/>
                         
@@ -71,7 +161,7 @@ export default function Register(){
                     </View>
                 </View>
             </SafeAreaView>
-        </>
+        </KeyboardAvoidingContent>
     )
 }
 

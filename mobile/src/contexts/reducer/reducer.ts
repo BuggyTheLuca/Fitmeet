@@ -20,8 +20,8 @@ export const reducer = (state: AppState, action: Action) => {
                 ...state,
                 auth: {
                     ...state.auth,
-                    loggedUser: login(action.payload),
-                    isAuthenticated: true
+                    loggedUser: action.payload.user,
+                    isAuthenticated: true,
                 }
             }
         case ActionTypes.LOGOUT:
