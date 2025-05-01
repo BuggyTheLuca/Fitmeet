@@ -2,6 +2,7 @@ import { LoggedUser } from "../../types/user";
 
 interface AuthState {
     loggedUser: LoggedUser | undefined
+    token: string | undefined,
     isAuthenticated: boolean;
     login: (email: string, password: string) => void;
     logout: () => void;
@@ -16,6 +17,7 @@ export interface AppState {
 export const initialState: AppState = {
     auth: {
         loggedUser: undefined,
+        token: undefined,
         isAuthenticated: false,
         login: (email: string, password: string) => {},
         logout: () => {},

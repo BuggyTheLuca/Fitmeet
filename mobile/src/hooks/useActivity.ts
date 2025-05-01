@@ -12,93 +12,61 @@ import { createActivity,
          unsubscribeFromActivity, 
          deactivateActivity,
          approveParticipant} from "../services/activityService";
-import useAppContext from "./useAppContext";
 
 export function useActivity() {
-  const {auth: {loggedUser}} = useAppContext();
-
 
     const getActivityTypes = useCallback(async () => {
-      if (!loggedUser) return;
-  
-      return await getAllActivityTypes(loggedUser);
-      
-    }, [loggedUser]);
+      return await getAllActivityTypes();
+    }, []);
 
 
     const setNewActivity = useCallback(async (newActivity: FormData) => {
-      if (!loggedUser) return;
-      
-      return await createActivity(loggedUser, newActivity);
-
-    }, [loggedUser])
+      return await createActivity(newActivity);
+    }, [])
 
     const updateActivity = useCallback(async (activity: FormData, activityId: string) => {
-      if (!loggedUser) return;
-      
-      return await updateActivityData(loggedUser, activity, activityId)
+      return await updateActivityData(activity, activityId)
 
-    }, [loggedUser])
+    }, [])
 
     const getActivityParticipants = useCallback(async (activityId: string) => {
-      if (!loggedUser) return;
-  
-      return await getParticipantsByActivityId(loggedUser, activityId)
-
-    }, [loggedUser])
+      return await getParticipantsByActivityId(activityId)
+    }, [])
 
     const getActivities = useCallback(async (pageable: Pageable) => {
-      if (!loggedUser) return;
+      return await getAllActivitiesPaginated(pageable)
 
-      return await getAllActivitiesPaginated(loggedUser, pageable)
-
-    }, [loggedUser])
+    }, [])
 
     const getActivitiesCreated = useCallback(async (pageable: Pageable) => {
-      if (!loggedUser) return;
+      return await getCreatedActivitiesPaginated(pageable)
 
-      return await getCreatedActivitiesPaginated(loggedUser, pageable)
-
-    }, [loggedUser])
+    }, [])
 
     const getActivitiesParticipating = useCallback(async (pageable: Pageable) => {
-      if (!loggedUser) return;
+      return await getParticipatingActivitiesPaginated(pageable)
 
-      return await getParticipatingActivitiesPaginated(loggedUser, pageable)
-
-    }, [loggedUser])
+    }, [])
 
     const subscribe = useCallback(async (activityId: string) => {
-      if (!loggedUser) return;
-  
-      return await subscribeInActivity(loggedUser, activityId)
-    }, [loggedUser])
+      return await subscribeInActivity(activityId)
+    }, [])
 
     const checkIn = useCallback(async (activityId: string, confirmationCode: string) => {
-      if (!loggedUser) return;
-  
-      return await checkInToActivity(loggedUser, activityId, confirmationCode)
-      
-    }, [loggedUser])
+      return await checkInToActivity(activityId, confirmationCode)
+    }, [])
 
     const unsubscribe = useCallback(async (activityId: string) => {
-      if (!loggedUser) return;
-  
-      return await unsubscribeFromActivity(loggedUser, activityId)
-    }, [loggedUser])
+      return await unsubscribeFromActivity(activityId)
+    }, [])
 
     const deleteActivity = useCallback(async (activityId: string) => {
-      if (!loggedUser) return;
-  
-      return await deactivateActivity(loggedUser, activityId)
-    }, [loggedUser])
+      return await deactivateActivity(activityId)
+    }, [])
 
     const approve = useCallback(async (activityId: string, approveRequest: any) => {
-      if (!loggedUser) return;
-  
-      return await approveParticipant(loggedUser, activityId, approveRequest)
-
-    }, [loggedUser])
+      return await approveParticipant(activityId, approveRequest)
+    }, [])
 
     return {
         getActivityTypes,

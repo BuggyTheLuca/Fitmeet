@@ -8,6 +8,6 @@ export const defaultStyles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        backgroundColor: colors.default
+        backgroundColor: colors.white
     },
 })

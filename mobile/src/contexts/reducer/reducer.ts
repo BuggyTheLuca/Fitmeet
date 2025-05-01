@@ -19,6 +19,7 @@ export const reducer = (state: AppState, action: Action) => {
                 ...state,
                 auth: {
                     ...state.auth,
+                    token: action.payload.token,
                     loggedUser: action.payload.loggedUser,
                     isAuthenticated: action.payload.isAuthenticated,
                 }

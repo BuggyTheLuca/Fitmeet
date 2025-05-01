@@ -42,7 +42,7 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
                     level: responseData.level,
                     achievements: responseData.achievements
                 }
-                dispatch({ type: ActionTypes.LOGIN, payload: { token: responseData.token, user: loggedUser , isAuthenticated: true} });
+                dispatch({ type: ActionTypes.LOGIN, payload: { token: responseData.token, loggedUser , isAuthenticated: true} });
             }
 
         } catch (error: any) {

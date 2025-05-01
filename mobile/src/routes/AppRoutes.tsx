@@ -4,6 +4,7 @@ import React from "react";
 import Login from "../pages/login/Login";
 import Register from "../pages/register/Register";
 import Home from "../pages/home/Home";
+import { useAuthInterceptor } from "../hooks/useAuthInterceptor";
 
 export type MainStackParamList = {
     Login: undefined;
@@ -23,10 +24,17 @@ function MainStackScreen(){
     )
 }
 
+function WithInterceptor({ children }: { children: React.ReactNode }) {
+    useAuthInterceptor();
+    return <>{children}</>;
+  }
+
 export default function AppRoutes() {
     return (
         <NavigationContainer>
-            <MainStackScreen/>
+            <WithInterceptor>
+                <MainStackScreen />
+            </WithInterceptor>
         </NavigationContainer>
     )
 }
