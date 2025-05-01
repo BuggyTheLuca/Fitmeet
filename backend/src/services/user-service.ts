@@ -17,7 +17,7 @@ export const createUser = async (newUserRequest: NewUserRequest) => {
     const encryptedPassword = await bcrypt.hash(newUserRequest.password, 10)
     newUserRequest.password = encryptedPassword;
 
-    const userToSave = {...newUserRequest, avatar: `${process.env.S3_ENDPOINT}/${process.env.USER_BUCKET}/default-avatar.jpg`}
+    const userToSave = {...newUserRequest, avatar: `http://localhost:4566/${process.env.USER_BUCKET}/default-avatar.jpg`}
 
     await create(userToSave);
 }
