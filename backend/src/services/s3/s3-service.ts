@@ -39,7 +39,7 @@ export async function uploadUserAvatar(file: Express.Multer.File) {
 
     await s3.send(new PutObjectCommand(uploadParams));
 
-    return `${process.env.S3_ENDPOINT}/${userBucketName}/${file.originalname}`;
+    return `http://localhost:4566/${userBucketName}/${file.originalname}`;
 }
 
 export async function uploadActivityImage(file: Express.Multer.File) {
@@ -53,7 +53,7 @@ export async function uploadActivityImage(file: Express.Multer.File) {
 
     await s3.send(new PutObjectCommand(uploadParams));
 
-    return `${process.env.S3_ENDPOINT}/${activityBucketName}/${file.originalname}`;
+    return `http://localhost:4566/${activityBucketName}/${file.originalname}`;
 }
 
 async function deletePreviousFile (file: Express.Multer.File, bucketName: string){
