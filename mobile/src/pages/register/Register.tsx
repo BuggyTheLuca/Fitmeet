@@ -79,12 +79,11 @@ export default function Register(){
 
     return (
         <KeyboardAvoidingContent>
+            <PreviousViewNav/>
             <SafeAreaView style={defaultStyles.screen}>
+            
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <View style={{flexDirection: 'row', width: '100%', justifyContent: 'flex-start'}}>
-                            <PreviousViewNav/>
-                        </View>
                         <Title>
                             Crie Sua Conta
                         </Title>

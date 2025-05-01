@@ -7,7 +7,7 @@ import CustomText from "../CustomText/CustomText";
 interface typeListProps{
     data: ActivityType[],
     title: string,
-    onclick?: (id: string) => void
+    onclick?: (type: ActivityType) => void
 }
 
 
@@ -20,7 +20,7 @@ export default function TypeList ({data, title, onclick}: typeListProps){
                 extraData={data}
                 horizontal
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => onclick?.(item.id)}>
+                    <TouchableOpacity onPress={() => onclick?.(item)}>
                         <View style={styles.item}>
                             
                                 <Image source={{ uri: fixUrl(item.image) }} style={{

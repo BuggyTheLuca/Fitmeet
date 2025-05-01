@@ -10,6 +10,7 @@ import { fixUrl } from "../../utils/fix-url";
 import { Pageable } from "../../types/pageable";
 import ActivityList from "../../components/ActivityList/ActivityList";
 import { Plus } from "phosphor-react-native";
+import { useCustomNavigation } from "../../hooks/useCustomNavigation";
 
 export default function Home(){
     const [activityTypes, setActivityTypes] = useState<ActivityType[]>([])
@@ -17,6 +18,8 @@ export default function Home(){
 
     const {auth: {loggedUser}} = useAppContext()
     const {getActivityTypes, getActivities} = useActivity()
+
+    const navigation = useCustomNavigation()
 
     useEffect(() => {
         getActivityTypes().then(data => {
@@ -45,8 +48,8 @@ export default function Home(){
         console.log('nova atividade')
     }
 
-    const handleTypeClick = (id: string) =>{
-        console.log('type click', id)
+    const handleTypeClick = (type: ActivityType) =>{
+        navigation.navigate('ActivityByType', { type })
     } 
 
     const handleActivityClick = (id: string) =>{

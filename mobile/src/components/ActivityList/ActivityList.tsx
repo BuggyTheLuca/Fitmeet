@@ -5,20 +5,51 @@ import Title from "../Title/Title";
 import CustomText from "../CustomText/CustomText";
 import { fonts } from "../../assets/styles/fonts";
 import { formatDate } from "../../utils/format-date";
+import React, { useState } from "react";
+import { CaretDown, CaretUp } from "phosphor-react-native";
 
 interface activityListProps{
     data: ActivityResponse[]
     title: string,
+    type?: 'link' | 'collapse' | undefined,
     onclick?: (id: string) => void
 }
 
 
-export default function ActivityList ({data, title, onclick}: activityListProps){
+export default function ActivityList ({data, title, type, onclick}: activityListProps){
+
+    const [isCollapsed, setCollapsed] = useState(false)
+
+
     return (
         <View style={styles.container}>
-            <Title style={styles.title}>{title}</Title>
-            <FlatList
-                style={{borderRadius: 10}}
+            <View style={styles.header}>
+                <Title>{title}</Title>
+                {type ? 
+                    (() => {
+                        switch (type) {
+                            case "collapse":
+                                return <>
+                                    <TouchableOpacity onPress={() => setCollapsed(!isCollapsed)}>
+                                        {isCollapsed ? <CaretUp/> : <CaretDown/>}
+                                    </TouchableOpacity>
+                                </>;
+
+                            case "link":
+                                return <>
+                                
+                                </>;
+
+                            default:
+                                return null
+                        }
+                    })()
+                    :
+                    null
+                }
+            </View>
+            {isCollapsed ? null : <FlatList
+                style={styles.list}
                 data={data}
                 extraData={data}
                 renderItem={({ item }) => (
@@ -48,7 +79,7 @@ export default function ActivityList ({data, title, onclick}: activityListProps)
                 keyExtractor={(type) => type.id}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 30 }}
-            />
+            />}
         </View>
     )
 }
@@ -56,14 +87,21 @@ export default function ActivityList ({data, title, onclick}: activityListProps)
 const styles = StyleSheet.create({
     container: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height * 0.555,
         flexDirection: 'column',
         alignItems: 'flex-start',
         gap: 6,
         paddingLeft: 10,
     },
-    title: {
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '90%',
         paddingLeft: 12
+    },
+    list: {
+        maxHeight: Dimensions.get('window').height * 0.505,
+        borderRadius: 10
     },
     item: {
         alignItems: 'flex-start',
