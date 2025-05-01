@@ -1,6 +1,4 @@
-import { StyleSheet, View, TextProps, Text } from 'react-native';
-import { fonts } from '../../assets/styles/fonts';
-import { colors } from '../../assets/styles/colors';
+import { TextProps, Text } from 'react-native';
 import { styles } from './styles';
 
 interface CustomTextProps extends TextProps {

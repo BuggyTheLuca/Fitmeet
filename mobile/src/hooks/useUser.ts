@@ -5,55 +5,46 @@ import { deactivateUser,
          setUserAvatar,
          setUserPreferences,
          updateUserData } from "../services/userService";
-import useAppContext from "./useAppContext";
 
 
 export function useUser() {
-    
-    const {auth: {loggedUser}} = useAppContext();
 
     const getPreferences = useCallback(async () => {
-      if (!loggedUser) return;
 
-      return await getUserPreferences(loggedUser)
+      return await getUserPreferences()
 
-    }, [loggedUser]);
+    }, []);
 
     const setPreferences = useCallback(async (data: string[]) => {
-      if (!loggedUser) return;
-  
-      return await setUserPreferences(loggedUser, data)
 
-    }, [loggedUser])
+      return await setUserPreferences(data)
+
+    }, [])
 
 
     const getUser = useCallback(async () => {
-      if (!loggedUser) return;
-  
-      return await getUserData(loggedUser)
 
-    }, [loggedUser]);
+      return await getUserData()
+
+    }, []);
 
     const updateAvatar = useCallback(async (avatar: FormData) => {
-      if (!loggedUser) return;
+    
+      return await setUserAvatar(avatar)
       
-      return await setUserAvatar(loggedUser, avatar)
-      
-    }, [loggedUser])
+    }, [])
 
     const updateUser = useCallback(async (userUpdated: FormData) => {
-      if (!loggedUser) return;
-      
-      return await updateUserData(loggedUser, userUpdated)
+    
+      return await updateUserData(userUpdated)
 
-    }, [loggedUser])
+    }, [])
 
     const deleteUser = useCallback(async () => {
-      if (!loggedUser) return;
-      
-      return await deactivateUser(loggedUser)
+    
+      return await deactivateUser()
 
-    }, [loggedUser])
+    }, [])
 
     return {
         getPreferences,
