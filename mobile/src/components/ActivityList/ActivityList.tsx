@@ -12,13 +12,13 @@ interface activityListProps{
     data: ActivityResponse[]
     title: string,
     type?: 'link' | 'collapse' | undefined,
-    onclick?: (id: string) => void
+    onclick?: (activity: ActivityResponse) => void
 }
 
 
 export default function ActivityList ({data, title, type, onclick}: activityListProps){
 
-    const [isCollapsed, setCollapsed] = useState(false)
+    const [isCollapsed, setCollapsed] = useState(true)
 
 
     return (
@@ -54,7 +54,7 @@ export default function ActivityList ({data, title, type, onclick}: activityList
                 extraData={data}
                 renderItem={({ item }) => (
                     <View style={styles.item}>
-                        <TouchableOpacity onPress={() => onclick?.(item.id)}>
+                        <TouchableOpacity onPress={() => onclick?.(item)}>
                             <Image source={{uri: fixUrl(item.image)}} style={{width: Dimensions.get('window').width * 0.9,
                                 height: 160,
                                 borderRadius: 10}}/>

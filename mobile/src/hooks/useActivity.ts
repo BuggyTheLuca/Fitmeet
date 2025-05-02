@@ -12,10 +12,14 @@ import { createActivity,
          unsubscribeFromActivity, 
          deactivateActivity,
          approveParticipant} from "../services/activityService";
+import useAppContext from "./useAppContext";
 
 export function useActivity() {
 
+    const {auth: {token}} = useAppContext()
+
     const getActivityTypes = useCallback(async () => {
+      console.log({useActivityToken: token})
       return await getAllActivityTypes();
     }, []);
 

@@ -13,6 +13,7 @@ import Title from "../../components/Title/Title";
 import CustomText from "../../components/CustomText/CustomText";
 import { verifyEmail } from "../../utils/verify-email";
 import { showErrorToast } from "../../services/toastService/toastService";
+import KeyboardAvoidingContent from "../../components/KeyboardAvoidingContent/KeyboardAvoidingContent";
 
 const { width } = Dimensions.get('window');
 
@@ -50,9 +51,6 @@ export default function Login(){
 
             login && await login(email, password)
 
-            navigation.navigate('Home')
-
-
         } catch (error: any) {
             if(error.status == 401){
                 setPasswordError(true);
@@ -68,7 +66,7 @@ export default function Login(){
 
 
     return (
-        <>
+        <KeyboardAvoidingContent>
             <SafeAreaView style={defaultStyles.screen}>
                 <View style={styles.container}>
                     <View style={styles.header}>
@@ -125,7 +123,7 @@ export default function Login(){
                     </View>
                 </View>
             </SafeAreaView>
-        </>
+        </KeyboardAvoidingContent>
     )
 }
 

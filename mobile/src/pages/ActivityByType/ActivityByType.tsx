@@ -63,8 +63,8 @@ export function ActivityByType() {
         navigation.navigate('ActivityByType', { type: newType })
     } 
 
-    const handleActivityClick = (id: string) =>{
-        console.log('activity click', id)
+    const handleActivityClick = (activity: ActivityResponse) =>{
+        console.log('activity click', activity)
     }
 
     return (

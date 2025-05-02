@@ -35,13 +35,14 @@ export default function Home(){
         }
 
         getActivities(pageable).then(data => {
+            console.log(data)
             if(data)
                 setActivities(data.activityPage.activities)
         })
     }, [getActivities])
 
     const handleProfileClick = () =>{
-        console.log("profile")
+        navigation.navigate('Profile')
     }
 
     const handleNewActivityClick = () =>{
@@ -52,8 +53,9 @@ export default function Home(){
         navigation.navigate('ActivityByType', { type })
     } 
 
-    const handleActivityClick = (id: string) =>{
-        console.log('activity click', id)
+    const handleActivityClick = (activity: ActivityResponse) =>{
+        console.log({activity})
+        console.log({loggedUser})
     }
 
     return (
@@ -102,6 +104,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
+        position: 'relative',
         alignItems: 'flex-start',
         backgroundColor: colors.white
     },
@@ -139,10 +142,10 @@ const styles = StyleSheet.create({
         marginTop: 8
     },
     buttonView: {
-        width: Dimensions.get('screen').width * 0.95,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
+        position: 'absolute',    
+        bottom: 25,
+        right: 20,
+        zIndex: 10,
     },
     button: {
         backgroundColor: colors.primary,

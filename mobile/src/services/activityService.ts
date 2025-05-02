@@ -55,6 +55,10 @@ export async function getCreatedActivitiesPaginated(pageable: Pageable){
         page: pageable.page.toString(),
         pageSize: pageable.pageSize.toString()
     });
+
+    if(pageable.filter){
+        params.append('typeId', pageable.filter)
+    }
   
     const res = await api.get(`/activities/user/creator?${params.toString()}`, { isProtected: true });
   
@@ -67,6 +71,10 @@ export async function getParticipatingActivitiesPaginated(pageable: Pageable){
         page: pageable.page.toString(),
         pageSize: pageable.pageSize.toString()
     });
+
+    if(pageable.filter){
+        params.append('typeId', pageable.filter)
+    }
   
     const res = await api.get(`/activities/user/participant?${params.toString()}`, { isProtected: true });
   

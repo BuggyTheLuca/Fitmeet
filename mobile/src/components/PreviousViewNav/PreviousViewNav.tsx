@@ -16,7 +16,7 @@ export default function PreviousViewNav (){
 const styles = StyleSheet.create({
     fixedButton: {
         position: 'absolute',    
-        top: 25,
+        top: 35,
         left: 20,
         zIndex: 10
     }

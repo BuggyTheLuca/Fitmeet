@@ -22,6 +22,7 @@ export const reducer = (state: AppState, action: Action) => {
                     token: action.payload.token,
                     loggedUser: action.payload.loggedUser,
                     isAuthenticated: action.payload.isAuthenticated,
+                    isLoading: false,
                 }
             }
         case ActionTypes.LOGOUT:
@@ -29,7 +30,10 @@ export const reducer = (state: AppState, action: Action) => {
                 ...state,
                 auth: {
                     ...state.auth,
-                    isAuthenticated: false
+                    loggedUser: undefined,
+                    token: undefined,
+                    isAuthenticated: false,
+                    isLoading: false,
                 }
             }
         default:
