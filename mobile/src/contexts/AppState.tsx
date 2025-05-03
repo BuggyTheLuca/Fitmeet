@@ -31,10 +31,7 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
                 const token = await Keychain.getGenericPassword({ service: TOKEN_STORAGE_KEY });
                 const loggedUser = await Keychain.getGenericPassword({ service: USER_STORAGE_KEY });
 
-                console.log({KeychainToken: token})
-
                 if (token && loggedUser) {
-                    console.log({KeychainToken: token.password})
                     dispatch({ type: ActionTypes.LOGIN, payload: { token: token.password, loggedUser: JSON.parse(loggedUser.password), isAuthenticated: true } })
                 } else {
                     dispatch({ type: ActionTypes.LOGOUT, payload: null })
@@ -81,7 +78,6 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
                     level: responseData.level,
                     achievements: responseData.achievements
                 }
-                console.log({responseToken: responseData.token})
                 await storageAuthData(responseData.token, loggedUser);
                 dispatch({ type: ActionTypes.LOGIN, payload: { token: responseData.token, loggedUser , isAuthenticated: true} });
             }
@@ -120,8 +116,6 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
 }
 
 export function AuthInterceptorHandler() {
-    const {auth: {token}} = useAppContext()
-    console.log({AuthInterceptorHandler: token})
     useAuthInterceptor();
     return null;
   }

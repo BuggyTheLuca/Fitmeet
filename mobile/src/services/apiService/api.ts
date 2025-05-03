@@ -3,6 +3,7 @@ import axios from 'axios';
 declare module 'axios' {
   export interface AxiosRequestConfig {
     isProtected?: boolean;
+    debugRequest?: boolean;
   }
 }
 

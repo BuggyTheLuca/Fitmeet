@@ -5,20 +5,47 @@ import Title from "../Title/Title";
 import CustomText from "../CustomText/CustomText";
 import { fonts } from "../../assets/styles/fonts";
 import { formatDate } from "../../utils/format-date";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CaretDown, CaretUp } from "phosphor-react-native";
+import { Pageable } from "../../types/pageable";
+import { useActivity } from "../../hooks/useActivity";
+import { defaultPageable } from "../../utils/defaultPageable";
 
 interface activityListProps{
-    data: ActivityResponse[]
     title: string,
     type?: 'link' | 'collapse' | undefined,
+    pageable?: Pageable,
+    responseType?: 'created' | 'participating' | undefined
     onclick?: (activity: ActivityResponse) => void
 }
 
+export default function ActivityList ({title, type, onclick, responseType, pageable = defaultPageable}: activityListProps){
 
-export default function ActivityList ({data, title, type, onclick}: activityListProps){
+    const [isCollapsed, setCollapsed] = useState((type == "collapse"))
+    const [activities, setActivities] = useState<ActivityResponse[]>([])
 
-    const [isCollapsed, setCollapsed] = useState(true)
+    const {getActivitiesParticipating, getActivitiesCreated, getActivities} = useActivity()
+
+    useEffect(() => {
+        if (responseType === 'created') {
+            getActivitiesCreated(pageable).then(data => {
+                if (data) setActivities(data.activityPage.activities);
+            });
+            return;
+        }
+    
+        if (responseType === 'participating') {
+            getActivitiesParticipating(pageable).then(data => {
+                if (data) setActivities(data.activityPage.activities);
+            });
+            return;
+        }
+    
+        getActivities(pageable).then(data => {
+            if (data) setActivities(data.activityPage.activities);
+        });
+    
+    }, [getActivitiesCreated, getActivitiesParticipating, getActivities, responseType, pageable])
 
 
     return (
@@ -49,9 +76,9 @@ export default function ActivityList ({data, title, type, onclick}: activityList
                 }
             </View>
             {isCollapsed ? null : <FlatList
-                style={styles.list}
-                data={data}
-                extraData={data}
+                data={activities}
+                extraData={activities}
+                scrollEnabled={false}
                 renderItem={({ item }) => (
                     <View style={styles.item}>
                         <TouchableOpacity onPress={() => onclick?.(item)}>
@@ -98,10 +125,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '90%',
         paddingLeft: 12
-    },
-    list: {
-        maxHeight: Dimensions.get('window').height * 0.505,
-        borderRadius: 10
     },
     item: {
         alignItems: 'flex-start',

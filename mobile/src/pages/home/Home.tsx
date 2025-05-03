@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, Image, SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import TypeList from "../../components/TypeList/TypeList";
 import { ActivityResponse, ActivityType } from "../../types/activity";
 import { useActivity } from "../../hooks/useActivity";
@@ -7,17 +7,16 @@ import { colors } from "../../assets/styles/colors";
 import useAppContext from "../../hooks/useAppContext";
 import CustomText from "../../components/CustomText/CustomText";
 import { fixUrl } from "../../utils/fix-url";
-import { Pageable } from "../../types/pageable";
 import ActivityList from "../../components/ActivityList/ActivityList";
 import { Plus } from "phosphor-react-native";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
+import ScrollableScreen from "../../components/ScrollableScreen/ScrollableScreen";
 
 export default function Home(){
     const [activityTypes, setActivityTypes] = useState<ActivityType[]>([])
-    const [activities, setActivities] = useState<ActivityResponse[]>([])
 
     const {auth: {loggedUser}} = useAppContext()
-    const {getActivityTypes, getActivities} = useActivity()
+    const {getActivityTypes} = useActivity()
 
     const navigation = useCustomNavigation()
 
@@ -27,19 +26,6 @@ export default function Home(){
                 setActivityTypes(data.activityTypes)
         })
     }, [getActivityTypes])
-
-    useEffect(() => {
-        const pageable: Pageable = {
-            page: 1,
-            pageSize: 3
-        }
-
-        getActivities(pageable).then(data => {
-            console.log(data)
-            if(data)
-                setActivities(data.activityPage.activities)
-        })
-    }, [getActivities])
 
     const handleProfileClick = () =>{
         navigation.navigate('Profile')
@@ -60,7 +46,7 @@ export default function Home(){
 
     return (
         <>
-            <SafeAreaView style={[styles.container]}>
+            <ScrollableScreen>
                 <View style={styles.header}>
                     <View style={styles.welcome}>
                         <CustomText style={{color: colors.white}}>
@@ -84,36 +70,30 @@ export default function Home(){
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.section}>
-                    <ActivityList onclick={handleActivityClick} title="suas recomendações" data={activities}/>
+                <View>
+                    <ActivityList onclick={handleActivityClick} title="suas recomendações"/>
                 </View>
-                <View style={styles.section}>
+                <View>
                     <TypeList onclick={handleTypeClick} title="Categorias" data={activityTypes}/>
                 </View>
-                <View style={styles.buttonView}>
-                    <TouchableOpacity onPress={handleNewActivityClick} style={styles.button}>
-                        <Plus size={32} color="white"/>
-                    </TouchableOpacity>
-                </View>
-            </SafeAreaView>
+            </ScrollableScreen>
+            <View style={styles.buttonView}>
+                <TouchableOpacity onPress={handleNewActivityClick} style={styles.button}>
+                    <Plus size={32} color="white"/>
+                </TouchableOpacity>
+            </View>
         </>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        position: 'relative',
-        alignItems: 'flex-start',
-        backgroundColor: colors.white
-    },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingTop: 10,
         paddingInline: 15,
+        marginBottom: 20,
         height: 137,
         width: Dimensions.get('screen').width,
         borderBottomStartRadius: 32,
@@ -138,12 +118,9 @@ const styles = StyleSheet.create({
         borderColor: colors.white,
         borderRadius: 5
     },
-    section: {
-        marginTop: 8
-    },
     buttonView: {
-        position: 'absolute',    
-        bottom: 25,
+        position: 'absolute',  
+        top: Dimensions.get('window').height * 0.91,
         right: 20,
         zIndex: 10,
     },

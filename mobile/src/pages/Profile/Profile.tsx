@@ -1,72 +1,106 @@
-import React from "react";
-import { Dimensions, Image, SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { colors } from "../../assets/styles/colors";
 import useAppContext from "../../hooks/useAppContext";
 import PreviousViewNav from "../../components/PreviousViewNav/PreviousViewNav";
 import Title from "../../components/Title/Title";
 import { NotePencil, SignOut } from "phosphor-react-native";
 import { fixUrl } from "../../utils/fix-url";
+import { ActivityResponse } from "../../types/activity";
+import { useActivity } from "../../hooks/useActivity";
+import { Pageable } from "../../types/pageable";
+import ActivityList from "../../components/ActivityList/ActivityList";
+import CustomText from "../../components/CustomText/CustomText";
+import ScrollableScreen from "../../components/ScrollableScreen/ScrollableScreen";
 
 export default function Profile(){
 
     const {auth: {loggedUser, logout}} = useAppContext()
 
-
+    const handleActivityClick = (activity: ActivityResponse) =>{
+        console.log('activity click', activity)
+    }
 
     return <>
         <PreviousViewNav/>
-        <SafeAreaView style={[styles.container]}>
+        <ScrollableScreen>
             <View style={styles.header}>
-                <View style={styles.profile}>
-                    <Title>Perfil</Title>
-                    <View style={styles.profileMenu}>
-                        <TouchableOpacity>
-                            <NotePencil/>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={logout}>
-                            <SignOut/>
-                        </TouchableOpacity>
+                <View style={styles.menuRow}>
+                    <View style={styles.menu}>
+                        <Title>Perfil</Title>
+                        <View style={styles.menuItems}>
+                            <TouchableOpacity>
+                                <NotePencil/>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={logout}>
+                                <SignOut/>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-                <View>
-                    <Image source={{uri: fixUrl(loggedUser!.avatar)}}/>
+                <View style={styles.rowCentered}>
+                    <Image source={{uri: fixUrl(loggedUser!.avatar)}} style={{height: 104, width: 104}}/>
+                </View>
+                <View style={styles.rowCentered}>
+                    <Title>{loggedUser!.name}</Title>
                 </View>
             </View>
-        </SafeAreaView>
+            <View style={styles.carousel}>
+                <CustomText>Ué</CustomText>
+            </View>
+            <View style={styles.section}>
+                <ActivityList onclick={handleActivityClick} title="Suas atividades" responseType='created' type="collapse"/>
+            </View>
+            <View style={styles.section}>
+                <ActivityList onclick={handleActivityClick} title="Histórico de atividades" responseType='participating'/>
+            </View>
+        </ScrollableScreen>
     </>
 }
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        backgroundColor: colors.white
-    },
     header: {
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignContent: 'center',
         paddingTop: 35,
-        height: 276,
         width: Dimensions.get('screen').width,
+        height: 250,
         borderBottomStartRadius: 32,
         borderBottomEndRadius: 32,
+        gap: 12,
         backgroundColor: colors.primary
     },
-    profile: {
+    menu: {
         flexDirection: 'row',
-        width: Dimensions.get('screen').width * 0.50,
+        width: Dimensions.get('screen').width * 0.55,
         justifyContent: 'space-between',
         alignContent: 'center',
         marginEnd: 15
     },
-    profileMenu: {
+    menuItems: {
         flexDirection: 'row',
         alignContent: 'center',
         gap: 10,
         width: 40,
         marginEnd: 15
-    }
+    },
+    menuRow: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        width: Dimensions.get('window').width
+    },
+    rowCentered: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: Dimensions.get('window').width
+    },
+    carousel: {
+        height: 225,
+        width: Dimensions.get('window').width * 0.95,
+        backgroundColor: colors.lightGrey,
+        borderRadius: 10
+    },
+    section: {
+        marginTop: 8
+    },
 })
