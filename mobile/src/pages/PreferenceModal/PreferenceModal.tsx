@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import TypeList from "../../components/TypeList/TypeList";
 import { Dimensions, StyleSheet, View } from "react-native";
-import { colors } from "../../assets/styles/colors";
 import Title from "../../components/Title/Title";
 import { ActivityType } from "../../types/activity";
 import { CustomButton } from "../../components/CustomButton/CustomButton";
 import PreviousViewNav from "../../components/PreviousViewNav/PreviousViewNav";
 import { useUser } from "../../hooks/useUser";
-import { showErrorToast, showSuccessToast } from "../../services/toastService/toastService";
+import { showSuccessToast } from "../../services/toastService/toastService";
 
 interface PreferenceModalProps{
     onClose: () => void,
