@@ -27,9 +27,7 @@ export default function Home(){
         getPreferences().then(data => {
             if(data && data.preferences.length == 0){
                 setShowPreferenceModal(true)
-            }
-            console.log(data.preferences)
-                
+            }   
         })
     },[getPreferences])
 
@@ -39,7 +37,7 @@ export default function Home(){
     }
 
     const handleNewActivityClick = () =>{
-        console.log('nova atividade')
+        navigation.navigate('CreateActivity')
     }
 
     const handleTypeClick = (type: ActivityType) =>{

@@ -9,6 +9,7 @@ import { ActivityType } from "../types/activity";
 import useAppContext from "../hooks/useAppContext";
 import { ActivityIndicator, View } from "react-native";
 import Profile from "../pages/Profile/Profile";
+import { CreateActivity } from "../pages/CreateActivity/CreateActivity";
 
 export type MainStackParamList = {
     Login: undefined;
@@ -17,6 +18,7 @@ export type MainStackParamList = {
     ActivityByType: {
         type: ActivityType;
     };
+    CreateActivity: undefined,
     Profile: undefined
 }
 
@@ -27,6 +29,7 @@ function MainStackScreen(){
         <MainStack.Navigator screenOptions={{headerShown: false}} initialRouteName="Home">
             <MainStack.Screen name="Home" component={Home}/>
             <MainStack.Screen name="ActivityByType" component={ActivityByType}/>
+            <MainStack.Screen name="CreateActivity" component={CreateActivity}/>
             <MainStack.Screen name="Profile" component={Profile}/>
         </MainStack.Navigator>
     )
