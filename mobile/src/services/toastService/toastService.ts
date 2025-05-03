@@ -8,10 +8,10 @@ export function showErrorToast(title: string, message?: string) {
     });
 }
 
-export function showSuccessToast(title: string, message?: string) {
+export function showSuccessToast(message: string) {
     Toast.show({
         type: 'success',
-        text1: title,
+        text1: 'Sucesso',
         text2: message,
     });
 }

@@ -16,10 +16,10 @@ interface activityListProps{
     type?: 'link' | 'collapse' | undefined,
     pageable?: Pageable,
     responseType?: 'created' | 'participating' | undefined
-    onclick?: (activity: ActivityResponse) => void
+    onClick?: (activity: ActivityResponse) => void
 }
 
-export default function ActivityList ({title, type, onclick, responseType, pageable = defaultPageable}: activityListProps){
+export default function ActivityList ({title, type, onClick, responseType, pageable = defaultPageable}: activityListProps){
 
     const [isCollapsed, setCollapsed] = useState((type == "collapse"))
     const [activities, setActivities] = useState<ActivityResponse[]>([])
@@ -81,7 +81,7 @@ export default function ActivityList ({title, type, onclick, responseType, pagea
                 scrollEnabled={false}
                 renderItem={({ item }) => (
                     <View style={styles.item}>
-                        <TouchableOpacity onPress={() => onclick?.(item)}>
+                        <TouchableOpacity onPress={() => onClick?.(item)}>
                             <Image source={{uri: fixUrl(item.image)}} style={{width: Dimensions.get('window').width * 0.9,
                                 height: 160,
                                 borderRadius: 10}}/>

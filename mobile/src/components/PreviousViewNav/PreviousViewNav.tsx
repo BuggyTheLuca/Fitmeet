@@ -2,12 +2,22 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
 import { CaretLeft } from "phosphor-react-native";
 
+interface PreviousViewNavProps{
+    onClick?: () => void
+}
 
-export default function PreviousViewNav (){
+export default function PreviousViewNav ({onClick}: PreviousViewNavProps){
     const navigation = useCustomNavigation()
 
+    const handleClick = () => {
+        if(onClick)
+            onClick()
+        else
+            navigation.goBack()
+    }
+
     return (
-        <TouchableOpacity style={styles.fixedButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.fixedButton} onPress={handleClick}>
             <CaretLeft/>
         </TouchableOpacity>
     )

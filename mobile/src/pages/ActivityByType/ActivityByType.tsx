@@ -20,19 +20,9 @@ export function ActivityByType() {
     const route = useRoute<ActivityByTypeRouteProp>();
     const { type } = route.params;
     
-    const [activityTypes, setActivityTypes] = useState<ActivityType[]>([])
     const [pageable, setPageable] = useState<Pageable>(defaultPageable)
 
     const navigation = useCustomNavigation()
-
-    const {getActivityTypes} = useActivity()
-
-    useEffect(() => {
-        getActivityTypes().then(data => {
-            if(data)
-                setActivityTypes(data.activityTypes)
-        })
-    }, [getActivityTypes])
 
     const newPageable = useMemo(() => ({
         ...defaultPageable,
@@ -61,14 +51,14 @@ export function ActivityByType() {
                     </View>
                 </View>
                 <View style={styles.section}>
-                    <TypeList onclick={handleTypeClick} title="Categorias" data={activityTypes}/>
+                    <TypeList onClick={handleTypeClick} title="Categorias"/>
                 </View>
                 <View style={styles.section}>
-                    <ActivityList onclick={handleActivityClick} title="Suas atividades" responseType="created" type="collapse"/>
+                    <ActivityList onClick={handleActivityClick} title="Suas atividades" responseType="created" type="collapse"/>
                 </View>
                 <View style={styles.section}>
                     {pageable.filter && (
-                        <ActivityList onclick={handleActivityClick} title="Atividades da comunidade" pageable={pageable} />
+                        <ActivityList onClick={handleActivityClick} title="Atividades da comunidade" pageable={pageable} />
                     )}
                 </View>
             </ScrollableScreen>

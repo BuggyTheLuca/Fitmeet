@@ -49,10 +49,10 @@ export default function Profile(){
                 <CustomText>Ué</CustomText>
             </View>
             <View style={styles.section}>
-                <ActivityList onclick={handleActivityClick} title="Suas atividades" responseType='created' type="collapse"/>
+                <ActivityList onClick={handleActivityClick} title="Suas atividades" responseType='created' type="collapse"/>
             </View>
             <View style={styles.section}>
-                <ActivityList onclick={handleActivityClick} title="Histórico de atividades" responseType='participating'/>
+                <ActivityList onClick={handleActivityClick} title="Histórico de atividades" responseType='participating'/>
             </View>
         </ScrollableScreen>
     </>

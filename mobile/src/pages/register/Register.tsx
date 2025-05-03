@@ -63,7 +63,7 @@ export default function Register(){
             
             registerUser(data).then(data => {
                 if(data.status == 201 && data.message){
-                    showSuccessToast('Sucesso', data.message)
+                    showSuccessToast(data.message)
                     navigation.navigate('Login')
                 }else if (data.error){
                     showErrorToast('Houve um Erro', data.error)

@@ -10,10 +10,20 @@ export async function getUserPreferences(){
 }
 
 export async function setUserPreferences(preferences: string[]){
-  const res = await api.post(`/user/preferences/define`, JSON.stringify(preferences), { isProtected: true });
+  try {
+    const res = await api.post(`/user/preferences/define`, preferences, { isProtected: true });
 
-  const response = await res.data
-  return { status: res.status, message: response.message, error: response.error}
+    const response = await res.data
+    return { status: res.status, message: response.message, error: response.error}
+  } catch (error: any) {
+    if (error.response) {
+        const { status, data } = error.response;
+        return { status, ...data };
+    } else {
+        console.log('Erro sem resposta do servidor', error);
+        throw error;
+    }
+  }
 }
 
 export async function getUserData(){

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Dimensions, Image, Modal, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import TypeList from "../../components/TypeList/TypeList";
 import { ActivityResponse, ActivityType } from "../../types/activity";
 import { useActivity } from "../../hooks/useActivity";
@@ -11,21 +11,28 @@ import ActivityList from "../../components/ActivityList/ActivityList";
 import { Plus } from "phosphor-react-native";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
 import ScrollableScreen from "../../components/ScrollableScreen/ScrollableScreen";
+import { useUser } from "../../hooks/useUser";
+import { PreferenceModal } from "../PreferenceModal/PreferenceModal";
 
 export default function Home(){
-    const [activityTypes, setActivityTypes] = useState<ActivityType[]>([])
-
     const {auth: {loggedUser}} = useAppContext()
-    const {getActivityTypes} = useActivity()
+
+    const [showPreferenceModal, setShowPreferenceModal] = useState(false);
+
+    const {getPreferences} = useUser()
 
     const navigation = useCustomNavigation()
 
     useEffect(() => {
-        getActivityTypes().then(data => {
-            if(data)
-                setActivityTypes(data.activityTypes)
+        getPreferences().then(data => {
+            if(data && data.preferences.length == 0){
+                setShowPreferenceModal(true)
+            }
+            console.log(data.preferences)
+                
         })
-    }, [getActivityTypes])
+    },[getPreferences])
+
 
     const handleProfileClick = () =>{
         navigation.navigate('Profile')
@@ -47,6 +54,14 @@ export default function Home(){
     return (
         <>
             <ScrollableScreen>
+                <Modal
+                    animationType="fade"
+                    visible={showPreferenceModal}
+                    statusBarTranslucent={true}
+                    onRequestClose={() => setShowPreferenceModal(false)}
+                >
+                    <PreferenceModal onClose={() => setShowPreferenceModal(false)} closeType="jumpButton"/>
+                </Modal>
                 <View style={styles.header}>
                     <View style={styles.welcome}>
                         <CustomText style={{color: colors.white}}>
@@ -71,10 +86,10 @@ export default function Home(){
                     </View>
                 </View>
                 <View>
-                    <ActivityList onclick={handleActivityClick} title="suas recomendações"/>
+                    <ActivityList onClick={handleActivityClick} title="suas recomendações"/>
                 </View>
                 <View>
-                    <TypeList onclick={handleTypeClick} title="Categorias" data={activityTypes}/>
+                    <TypeList onClick={handleTypeClick} title="Categorias"/>
                 </View>
             </ScrollableScreen>
             <View style={styles.buttonView}>
