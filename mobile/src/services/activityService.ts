@@ -111,10 +111,20 @@ export async function getParticipatingActivitiesPaginated(pageable: Pageable){
 }
 
 export async function subscribeInActivity(activityId: string){
-    const res = await api.post(`/activities/${activityId}/subscribe`, { isProtected: true, debugRequest: true });
+    try{
+        const res = await api.post(`/activities/${activityId}/subscribe`, undefined, { isProtected: true });
 
-    const participant: Participant = await res.data;
-    return { status: res.status, participant };
+        const participant: Participant = await res.data;
+        return { status: res.status, participant };
+    }catch (error: any) {
+        if (error.response) {
+            const { status, data } = error.response;
+            return { status, ...data };
+        } else {
+            console.log('Erro sem resposta do servidor', error);
+            throw error;
+        }
+    }
 }
 
 export async function checkInToActivity(activityId: string, confirmationCode: string){

@@ -34,6 +34,7 @@ export function ActivityDetails(){
     const [isCreator, setIsCreator] = useState(false)
     const [isActivityDay, setIsActivityDay] = useState(false)
     const [isActivityOccurring, setIsActivityOccurring] = useState(false)
+    const [userAsParticipant, setUserAsParticipant] = useState<Participant>()
 
     const [confirmationCode, setConfirmationCode] = useState<string>()
     const [confirmationCodeError, setConfirmationCodeError] = useState(false);
@@ -52,6 +53,7 @@ export function ActivityDetails(){
                 setParticipants(data.participants)
                 setIsCreator(getIsCreator())
                 setIsParticipant(getIsParticipant(data.participants))
+                setUserAsParticipant(getUserAsParticipant(data.participants))
             }else{
                 showErrorToast("Erro!", 'Erro ao buscar participantes.')
             }
@@ -67,7 +69,7 @@ export function ActivityDetails(){
     function getIsParticipant(participants: Participant[]){
         if(!loggedUser || !participants) return false;
 
-        return participants.some(participant => participant.id == loggedUser.id)
+        return participants.some(participant => participant.userId == loggedUser.id)
     }
 
     function canEditParticipant(){
@@ -75,14 +77,14 @@ export function ActivityDetails(){
     }
 
     function canParticipate(){
-        return !isCreator && !isActivityDay && !isActivityOccurring && !activity.completedAt
+        return !isParticipant && !isCreator && !isActivityDay && !isActivityOccurring && !activity.completedAt
     }
 
-    function getUserAsParticipant() {
+    function getUserAsParticipant(participants: Participant[]) {
         if(!participants) return;
         if(!loggedUser) return;
 
-        const userAsParticipant = participants.find(participant => participant.id == loggedUser!.id)
+        const userAsParticipant = participants.find(participant => participant.userId == loggedUser!.id)
 
         return userAsParticipant
     }
@@ -188,10 +190,12 @@ export function ActivityDetails(){
                         <Title fontSize={20}>Participantes</Title>
                         {!isCreator &&
                             <View style={styles.participant}>
-                                <Image source={{uri: fixUrl(activity.creator.avatar)}} style={{width: 44, height: 44, borderRadius: 22}}/>
-                                <View>
-                                    <CustomText>{activity.creator.name}</CustomText>
-                                    <CustomText fontSize={12} lineHeight={14} style={{color: colors.grey}}>Organizador</CustomText>
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <Image source={{uri: fixUrl(activity.creator.avatar)}} style={{width: 44, height: 44, borderRadius: 22}}/>
+                                    <View>
+                                        <CustomText>{activity.creator.name}</CustomText>
+                                        <CustomText fontSize={12} lineHeight={14} style={{color: colors.grey}}>Organizador</CustomText>
+                                    </View>
                                 </View>
                             </View>
                         }
@@ -206,7 +210,7 @@ export function ActivityDetails(){
                                         <CustomText>{item.name}</CustomText>
                                     </View>
                                     {canEditParticipant() && 
-                                        <View>
+                                        <View style={{flexDirection: 'row', gap: 60}}>
                                             <TouchableOpacity style={styles.participantButton} onPress={() => handleApproveClick({
                                                 approved: false,
                                                 participantId: item.id
@@ -231,15 +235,18 @@ export function ActivityDetails(){
                 </View>
                 <View style={{width: '80%', flexDirection: 'column', alignItems: 'center', marginBottom: 30}}>
                     {canParticipate() && <CustomButton type="primary" text="Participar" onClick={handleSubscribeClick}/>}
-                    {isParticipant ?? (() => {
-                        switch(getUserAsParticipant()?.subscriptionStatus){
+                    {isParticipant && (() => {
+                        switch (userAsParticipant?.subscriptionStatus) {
                             case 'APPROVED':
-                                return <CustomButton type="primary" text="Sair" onClick={handleUnsubscribeClick}/>
+                                return <CustomButton type="primary" text="Sair" onClick={handleUnsubscribeClick} />;
                             case 'WAITING':
-                                return <CustomButton disabled text="Aguardando aprovação"/>
+                                return <CustomButton disabled text="Aguardando aprovação" />;
                             case 'REJECTED':
-                                return <CustomButton disabled type="danger" text="Incrição negada"/>
-                    }})}
+                                return <CustomButton disabled type="danger" text="Inscrição negada" />;
+                            default:
+                                return null;
+                        }
+                    })()}
                     {(isCreator && isActivityOccurring) && 
                         <CustomButton type="primary" text="Finalizar" onClick={handleConcludeActivityClick}/>
                     }
@@ -285,13 +292,19 @@ const styles = StyleSheet.create({
     },
     participant: {
         marginBottom: 10,
+        paddingRight: 30,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         marginInline: 5,
         width: Dimensions.get('window').width * 0.9,
     },
     participantButton: {
+        height: 30,
+        width: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: colors.primary,
-        borderRadius: 10
+        borderRadius: 15
     }
 })

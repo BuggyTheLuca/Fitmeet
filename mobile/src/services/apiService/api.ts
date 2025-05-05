@@ -16,4 +16,20 @@ const api = axios.create({
   }
 });
 
+api.interceptors.request.use(request => {
+  console.log('Starting Request:', request);
+  return request;
+});
+
+api.interceptors.response.use(
+  response => {
+    console.log('Response:', response);
+    return response;
+  },
+  error => {
+    console.log('Error:', error);
+    return Promise.reject(error);
+  }
+);
+
 export default api;
