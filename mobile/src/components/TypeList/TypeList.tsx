@@ -12,16 +12,19 @@ interface typeListProps{
     onClick?: (type: ActivityType) => void,
     type?: 'wrap' | undefined,
     imageSize?: number,
-    canSelect?: boolean,
+    selectMultiple?: boolean,
+    selectOne?: boolean,
     selectedIds?: string[]
 }
 
 
-export default function TypeList ({title, type, imageSize, onClick, canSelect, selectedIds}: typeListProps){
+export default function TypeList ({title, type, imageSize, onClick, selectMultiple, selectedIds, selectOne}: typeListProps){
 
     const [activityTypes, setActivityTypes] = useState<ActivityType[]>([])
 
     const [selectedTypes, setSelectedTypes] = useState<string[]>([])
+
+    const [selectedType, setSelectedType] = useState<string>()
 
     const {getActivityTypes} = useActivity()
 
@@ -38,14 +41,17 @@ export default function TypeList ({title, type, imageSize, onClick, canSelect, s
     }, [selectedIds])
 
     const toggleSelection = (id: string) => {
-        if(canSelect)
+        if(selectMultiple)
             setSelectedTypes((prev) =>
                 prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
             );
+
+        if(selectOne)
+            setSelectedType(id)
     };
 
     const getBorder = (id: string) => {
-        if(selectedTypes.includes(id))
+        if(selectedTypes.includes(id) || selectedType == id)
             return {
                 borderWidth: 2,
                 borderColor: colors.primary

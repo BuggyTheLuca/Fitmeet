@@ -39,7 +39,7 @@ export function PreferenceModal({onClose, closeType}: PreferenceModalProps){
             {closeType == 'backArrow' ? <PreviousViewNav onClick={onClose}/> : null}
             <View style={styles.container}>
                 <Title style={styles.title}>Selecione seus tipos favoritos</Title>
-                <TypeList imageSize={112} type="wrap" canSelect={true} onClick={onClick}></TypeList>
+                <TypeList imageSize={112} type="wrap" selectMultiple={true} onClick={onClick}></TypeList>
                 <View style={styles.buttonColumn}>
                     <CustomButton type="primary" text="Salvar" onClick={handleAddPreferences}/>
                     {closeType == 'jumpButton' ? <CustomButton text="Pular" onClick={onClose}/>: null}

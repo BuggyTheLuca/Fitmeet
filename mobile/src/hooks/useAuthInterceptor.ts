@@ -16,13 +16,23 @@ export function useAuthInterceptor() {
       return config;
     });
 
-    const debugInterceptor = api.interceptors.request.use(config => {
-      if ((config as any).debugRequest && token)
-        console.log({authToken: token, headers: config.headers, url: config.url, isProtected: config.isProtected})
-
-      return config;
+    const requestDebugInterceptor = api.interceptors.request.use(request => {
+      if ((request as any).debugRequest && token)
+          console.log('Starting Request:', request);
+      return request;
     });
-  
+    
+    const responseDebugInterceptor = api.interceptors.response.use(
+      response => {
+        if ((response as any).debugRequest && token)
+          console.log('Response:', response);
+        return response;
+      },
+      error => {
+        console.log('Error:', error);
+        return Promise.reject(error);
+      }
+    );
     const responseInterceptor = api.interceptors.response.use(
       response => response,
       error => {
@@ -37,7 +47,8 @@ export function useAuthInterceptor() {
     return () => {
       api.interceptors.request.eject(requestInterceptor);
       api.interceptors.response.eject(responseInterceptor);
-      api.interceptors.request.eject(debugInterceptor);
+      api.interceptors.response.eject(responseDebugInterceptor);
+      api.interceptors.response.eject(requestDebugInterceptor);
     };
   }, [token, logout]);
 }

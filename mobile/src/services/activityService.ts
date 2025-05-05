@@ -1,23 +1,45 @@
 import api from "./apiService/api";
 import { ActivityResponse, ActivityType } from "../types/activity";
 import { ActivityPage, Pageable } from "../types/pageable";
-import { LoggedUser, Participant } from "../types/user";
+import { Participant } from "../types/user";
 
 export async function getAllActivityTypes(){
     try {
         const res = await api.get(`/activities/types`, { isProtected: true });
         const activityTypes: ActivityType[] = await res.data;
         return { status: res.status, activityTypes };
-    } catch (error) {
-        console.log(error)
+    } catch (error: any) {
+        if (error.response) {
+            const { status, data } = error.response;
+            return { status, ...data };
+        } else {
+            console.log('Erro sem resposta do servidor', error);
+            throw error;
+        }
     }
 }
 
 export async function createActivity(newActivity: FormData) {
-    const res = await api.post(`/activities/new`, newActivity, { isProtected: true });
+    try {
+        const res = await api.post(`/activities/new`, newActivity, { 
+            isProtected: true,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Accept': 'application/json'
+            }
+        });
 
-    const response = await res.data;
-    return { status: res.status, error: response.error}
+        const response = await res.data;
+        return { status: res.status, data: response, error: response.error}
+    } catch (error: any) {
+        if (error.response) {
+            const { status, data } = error.response;
+            return { status, ...data };
+        } else {
+            console.log('Erro sem resposta do servidor', error);
+            throw error;
+        }
+    }
 }
 
 export async function updateActivityData(activity: FormData, activityId: string){
