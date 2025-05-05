@@ -13,6 +13,7 @@ import { CreateActivity } from "../pages/CreateActivity/CreateActivity";
 import { ActivityDetails } from "../pages/ActivityDetails/ActivityDetails";
 import { EditActivity } from "../pages/EditActivity/EditActivity";
 import { colors } from "../assets/styles/colors";
+import EditProfile from "../pages/EditProfile/EditProfile";
 
 export type MainStackParamList = {
     Login: undefined;
@@ -28,7 +29,8 @@ export type MainStackParamList = {
         activity: ActivityResponse;
     }
     CreateActivity: undefined,
-    Profile: undefined
+    Profile: undefined,
+    EditProfile: undefined
 }
 
 const MainStack = createStackNavigator<MainStackParamList>();
@@ -42,6 +44,7 @@ function MainStackScreen(){
             <MainStack.Screen name="EditActivity" component={EditActivity}/>
             <MainStack.Screen name="ActivityDetails" component={ActivityDetails}/>
             <MainStack.Screen name="Profile" component={Profile}/>
+            <MainStack.Screen name="EditProfile" component={EditProfile}/>
         </MainStack.Navigator>
     )
 }

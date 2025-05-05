@@ -7,12 +7,10 @@ import Title from "../../components/Title/Title";
 import { NotePencil, SignOut } from "phosphor-react-native";
 import { fixUrl } from "../../utils/fix-url";
 import { ActivityResponse } from "../../types/activity";
-import { useActivity } from "../../hooks/useActivity";
-import { Pageable } from "../../types/pageable";
 import ActivityList from "../../components/ActivityList/ActivityList";
-import CustomText from "../../components/CustomText/CustomText";
 import ScrollableScreen from "../../components/ScrollableScreen/ScrollableScreen";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
+import ProfileCarousel from "../../components/ProfileCarousel/ProfileCarousel";
 
 export default function Profile(){
 
@@ -32,7 +30,7 @@ export default function Profile(){
                     <View style={styles.menu}>
                         <Title>Perfil</Title>
                         <View style={styles.menuItems}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}>
                                 <NotePencil/>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={logout}>
@@ -42,15 +40,13 @@ export default function Profile(){
                     </View>
                 </View>
                 <View style={styles.rowCentered}>
-                    <Image source={{uri: fixUrl(loggedUser!.avatar)}} style={{height: 104, width: 104}}/>
+                    <Image source={{uri: fixUrl(loggedUser!.avatar)}} style={{height: 104, width: 104, borderRadius: 52}}/>
                 </View>
                 <View style={styles.rowCentered}>
                     <Title>{loggedUser!.name}</Title>
                 </View>
             </View>
-            <View style={styles.carousel}>
-                <CustomText>Ué</CustomText>
-            </View>
+            <ProfileCarousel loggedUser={loggedUser!}></ProfileCarousel>
             <View style={styles.section}>
                 <ActivityList onClick={handleActivityClick} title="Suas atividades" responseType='created' type="collapse"/>
             </View>

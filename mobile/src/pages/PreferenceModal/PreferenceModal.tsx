@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TypeList from "../../components/TypeList/TypeList";
 import { Dimensions, StyleSheet, View } from "react-native";
 import Title from "../../components/Title/Title";
@@ -10,14 +10,22 @@ import { showSuccessToast } from "../../services/toastService/toastService";
 
 interface PreferenceModalProps{
     onClose: () => void,
-    closeType: 'backArrow' | 'jumpButton'
+    closeType: 'backArrow' | 'jumpButton',
+    preferences?: string[]
 }
 
-export function PreferenceModal({onClose, closeType}: PreferenceModalProps){
+export function PreferenceModal({onClose, closeType, preferences}: PreferenceModalProps){
 
     const [selectedTypes, setSelectedTypes] = useState<string[]>([])
 
     const {setPreferences} = useUser()
+
+    useEffect(() => {
+        if(preferences){
+            const oldPreferences = preferences
+            setSelectedTypes(oldPreferences)
+        }
+    }, [preferences])
 
     const onClick = (type: ActivityType) => {
         setSelectedTypes((prev) =>
@@ -39,7 +47,7 @@ export function PreferenceModal({onClose, closeType}: PreferenceModalProps){
             {closeType == 'backArrow' ? <PreviousViewNav onClick={onClose}/> : null}
             <View style={styles.container}>
                 <Title style={styles.title}>Selecione seus tipos favoritos</Title>
-                <TypeList imageSize={112} type="wrap" selectMultiple={true} onClick={onClick}></TypeList>
+                <TypeList selectedIds={selectedTypes} imageSize={112} type="wrap" selectMultiple={true} onClick={onClick}></TypeList>
                 <View style={styles.buttonColumn}>
                     <CustomButton type="primary" text="Salvar" onClick={handleAddPreferences}/>
                     {closeType == 'jumpButton' ? <CustomButton text="Pular" onClick={onClose}/>: null}
