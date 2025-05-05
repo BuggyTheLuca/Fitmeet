@@ -6,10 +6,11 @@ import CustomText from "../CustomText/CustomText";
 import { fonts } from "../../assets/styles/fonts";
 import { formatDate } from "../../utils/format-date";
 import React, { useEffect, useState } from "react";
-import { CaretDown, CaretUp } from "phosphor-react-native";
+import { CaretDown, CaretUp, LockSimple } from "phosphor-react-native";
 import { Pageable } from "../../types/pageable";
 import { useActivity } from "../../hooks/useActivity";
 import { defaultPageable } from "../../utils/defaultPageable";
+import { colors } from "../../assets/styles/colors";
 
 interface activityListProps{
     title: string,
@@ -101,6 +102,9 @@ export default function ActivityList ({title, type, onClick, responseType, pagea
 
                             </View>
                         </TouchableOpacity>
+                        {item.private && <View style={styles.privateImage}>
+                            <LockSimple color={colors.white} size={20}></LockSimple>
+                        </View>}
                     </View>
                 )}
                 keyExtractor={(type) => type.id}
@@ -136,5 +140,16 @@ const styles = StyleSheet.create({
         width: '60%',
         flexDirection: 'row',
         justifyContent: 'space-around'
-    } 
+    },
+    privateImage: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.primary,
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        position: 'absolute',
+        top: 5,
+        left: 5
+    }
 })

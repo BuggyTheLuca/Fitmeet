@@ -5,10 +5,11 @@ import { colors } from "../../assets/styles/colors";
 interface props{
     onClick?: () => void;
     text?: string,
-    type?: 'default' | 'danger' | 'primary'
+    type?: 'default' | 'danger' | 'primary',
+    disabled?: boolean
 }
 
-export function CustomButton({onClick, type = 'default', text}: props){
+export function CustomButton({onClick, type = 'default', text, disabled: disable = false}: props){
 
     const styles = StyleSheet.create({
         button: {
@@ -29,7 +30,7 @@ export function CustomButton({onClick, type = 'default', text}: props){
     })
 
     return (
-        <TouchableOpacity style={styles.button} onPress={onClick}>
+        <TouchableOpacity style={styles.button} onPress={onClick} disabled={disable}>
             <Text style={styles.text}>{text}</Text>
         </TouchableOpacity>
     )

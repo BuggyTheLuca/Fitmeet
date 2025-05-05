@@ -45,8 +45,7 @@ export default function Home(){
     } 
 
     const handleActivityClick = (activity: ActivityResponse) =>{
-        console.log({activity})
-        console.log({loggedUser})
+        navigation.navigate('ActivityDetails', {activity})
     }
 
     return (

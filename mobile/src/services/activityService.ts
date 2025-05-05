@@ -105,7 +105,7 @@ export async function getParticipatingActivitiesPaginated(pageable: Pageable){
 }
 
 export async function subscribeInActivity(activityId: string){
-    const res = await api.post(`/activities/${activityId}/subscribe`, { isProtected: true });
+    const res = await api.post(`/activities/${activityId}/subscribe`, { isProtected: true, debugRequest: true });
 
     const participant: Participant = await res.data;
     return { status: res.status, participant };
@@ -135,6 +135,6 @@ export async function deactivateActivity(activityId: string){
 export async function approveParticipant(activityId: string, approve: any){
     const res = await api.put(`/activities/${activityId}/approve`, JSON.stringify(approve), { isProtected: true });
 
-    const activityResponse: ActivityResponse = await res.data;
-    return { status: res.status, activity: activityResponse}
+    const activityResponse: any = await res.data;
+    return { status: res.status, activity: activityResponse, message: activityResponse.message}
 }

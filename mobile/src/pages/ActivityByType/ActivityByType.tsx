@@ -38,7 +38,7 @@ export function ActivityByType() {
     } 
 
     const handleActivityClick = (activity: ActivityResponse) =>{
-        console.log('activity click', activity)
+        navigation.navigate('ActivityDetails', {activity})
     }
 
     return (

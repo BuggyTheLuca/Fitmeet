@@ -17,7 +17,7 @@ export function useAuthInterceptor() {
     });
 
     const requestDebugInterceptor = api.interceptors.request.use(request => {
-      if ((request as any).debugRequest && token)
+      if ((request as any).debugRequest)
           console.log('Starting Request:', request);
       return request;
     });
@@ -45,10 +45,10 @@ export function useAuthInterceptor() {
     );
   
     return () => {
-      api.interceptors.request.eject(requestInterceptor);
-      api.interceptors.response.eject(responseInterceptor);
       api.interceptors.response.eject(responseDebugInterceptor);
       api.interceptors.response.eject(requestDebugInterceptor);
+      api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.response.eject(responseInterceptor);
     };
   }, [token, logout]);
 }

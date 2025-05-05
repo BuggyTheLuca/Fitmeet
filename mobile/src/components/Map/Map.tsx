@@ -6,9 +6,10 @@ import MapView, { LatLng, Marker } from 'react-native-maps';
 
 interface MapProps {
     onLocationChange?: (latitude: number, longitude: number) => void;
+    location?: {latitude: number, longitude: number};
 }
 
-export default function Map({onLocationChange}: MapProps) {
+export default function Map({onLocationChange, location}: MapProps) {
 
     const [latitude, setLatitude] = useState<number | null>(null);
     const [longitude, setLongitude] = useState<number | null>(null);
@@ -34,6 +35,10 @@ export default function Map({onLocationChange}: MapProps) {
         );
     }
 
+    useEffect(() => {
+        setCoordinate(location)
+    }, [location])
+
 
     useEffect(() => {
         getLocation();
@@ -47,8 +52,8 @@ export default function Map({onLocationChange}: MapProps) {
                         onMapReady={() => getPermission()}
                         style={styles.map}
                         initialRegion={{
-                            latitude: latitude,
-                            longitude: longitude,
+                            latitude: coordinate?.latitude || latitude,
+                            longitude: coordinate?.longitude || longitude,
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
                         }}
@@ -57,10 +62,13 @@ export default function Map({onLocationChange}: MapProps) {
                         zoomEnabled={true}
                         loadingEnabled={true}
                         onLongPress={(e) => {
+                            if (!onLocationChange) return;
+                        
+                            const { latitude, longitude } = e.nativeEvent.coordinate;
                             setCoordinate(e.nativeEvent.coordinate);
-                            setLatitude(e.nativeEvent.coordinate.latitude);
-                            setLongitude(e.nativeEvent.coordinate.longitude);
-                            onLocationChange && onLocationChange(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude);
+                            setLatitude(latitude);
+                            setLongitude(longitude);
+                            onLocationChange(latitude, longitude);
                         }}
                     >
                         {
@@ -69,9 +77,11 @@ export default function Map({onLocationChange}: MapProps) {
                                     draggable
                                     coordinate={coordinate}
                                     onDragEnd={(e) => {
+                                        if (!onLocationChange) return;
+
                                         setLatitude(e.nativeEvent.coordinate.latitude);
                                         setLongitude(e.nativeEvent.coordinate.longitude);
-                                        onLocationChange && onLocationChange(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude);
+                                        onLocationChange(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude);
                                     }}
                                     title="Ponto de encontro"
                                     description="Aqui é o ponto de encontro"

@@ -12,13 +12,16 @@ import { Pageable } from "../../types/pageable";
 import ActivityList from "../../components/ActivityList/ActivityList";
 import CustomText from "../../components/CustomText/CustomText";
 import ScrollableScreen from "../../components/ScrollableScreen/ScrollableScreen";
+import { useCustomNavigation } from "../../hooks/useCustomNavigation";
 
 export default function Profile(){
 
     const {auth: {loggedUser, logout}} = useAppContext()
 
+    const navigation = useCustomNavigation()
+
     const handleActivityClick = (activity: ActivityResponse) =>{
-        console.log('activity click', activity)
+        navigation.navigate('ActivityDetails', {activity})
     }
 
     return <>
