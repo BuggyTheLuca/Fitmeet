@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TouchableOpacity, View, Text, Platform, StyleSheet } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React from 'react';
@@ -8,17 +8,24 @@ import { colors } from '../../assets/styles/colors';
 
 interface DatePickerProps {
     onChange?: (date: Date) => void;
+    dateString?: string;
     required?: boolean,
     isError?: boolean,
     errorText?: string
     label: string;
 }
 
-export default function DatePicker({ onChange, label, required, isError, errorText }: DatePickerProps) {
+export default function DatePicker({ onChange, label, required, isError, errorText, dateString }: DatePickerProps) {
 
     const [date, setDate] = useState<Date>(new Date());
     const [mode, setMode] = useState<'date' | 'time'>('date');
     const [show, setShow] = useState(false);
+
+
+    useEffect(() => {
+        if(dateString)
+            setDate(new Date(dateString))
+    }, [dateString])
 
 
     function formatDate(date: Date) {

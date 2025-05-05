@@ -17,6 +17,7 @@ import Title from "../../components/Title/Title";
 import Map from "../../components/Map/Map";
 import { CustomButton } from "../../components/CustomButton/CustomButton";
 import { Input } from "../../components/Input/Input";
+import { useCustomNavigation } from "../../hooks/useCustomNavigation";
 
 
 type ActivityDetailsRouteProp = RouteProp<MainStackParamList, 'ActivityDetails'>;
@@ -25,6 +26,8 @@ export function ActivityDetails(){
     const {auth: {loggedUser}} = useAppContext()
     const route = useRoute<ActivityDetailsRouteProp>();
     const { activity } = route.params;
+
+    const navigation = useCustomNavigation()
 
     const [participants, setParticipants] = useState<Participant[]>()
     const [isParticipant, setIsParticipant] = useState(false)
@@ -118,9 +121,11 @@ export function ActivityDetails(){
         <>
             <ScrollableScreen>
                 <PreviousViewNav/>
-                <ImageBackground style={styles.activityImage} source={{uri: fixUrl(activity.image)}} resizeMode="contain">
+                <ImageBackground style={styles.activityImage} source={{uri: fixUrl(activity.image)}}
+                                    resizeMethod='resize'
+                                    resizeMode='cover'>
                     {isCreator &&
-                        <TouchableOpacity style={styles.editButton}>
+                        <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('EditActivity', {activity})}>
                             <NotePencil/>
                         </TouchableOpacity>
                     }

@@ -10,15 +10,17 @@ import { colors } from "../../assets/styles/colors";
 interface typeListProps{
     title?: string,
     onClick?: (type: ActivityType) => void,
+    getIdByName?: (typeId: string) => void,
     type?: 'wrap' | undefined,
     imageSize?: number,
     selectMultiple?: boolean,
     selectOne?: boolean,
     selectedIds?: string[]
+    selectedName?: string
 }
 
 
-export default function TypeList ({title, type, imageSize, onClick, selectMultiple, selectedIds, selectOne}: typeListProps){
+export default function TypeList ({title, type, imageSize, onClick, selectMultiple, selectedIds, selectedName, selectOne, getIdByName}: typeListProps){
 
     const [activityTypes, setActivityTypes] = useState<ActivityType[]>([])
 
@@ -36,9 +38,20 @@ export default function TypeList ({title, type, imageSize, onClick, selectMultip
     }, [getActivityTypes])
 
     useEffect(() => {
-        if(selectedIds)
-            setSelectedTypes(selectedIds)
+        if(selectedIds){
+            const newIds = selectedIds;
+            setSelectedTypes(newIds)
+        }
     }, [selectedIds])
+
+    useEffect(() => {
+        if(selectedName && activityTypes){
+            const id = activityTypes.find((type) => type.name == selectedName)?.id
+            setSelectedType(id)
+            if(getIdByName && id)
+                getIdByName(id)
+        }
+    }, [selectedName, activityTypes])
 
     const toggleSelection = (id: string) => {
         if(selectMultiple)

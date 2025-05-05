@@ -247,7 +247,7 @@ export function CreateActivity() {
                     </Input.Root>
 
                     <Input.Root>
-                        <Input.Label>Ponto de encontro</Input.Label>
+                        <Input.Label>Visibilidade</Input.Label>
                         <View style={styles.privateInputView}>
                             <TouchableOpacity style={[styles.privateButton,
                                     isPrivate ? styles.privateSelected : styles.privateUnselected]}

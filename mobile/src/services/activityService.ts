@@ -43,7 +43,13 @@ export async function createActivity(newActivity: FormData) {
 }
 
 export async function updateActivityData(activity: FormData, activityId: string){
-    const res = await api.put(`/activities/${activityId}/update`, activity, { isProtected: true });
+    const res = await api.put(`/activities/${activityId}/update`, activity, { 
+        isProtected: true,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Accept': 'application/json'
+        }
+    });
 
     const activityResponse: ActivityResponse = await res.data;
     return { status: res.status, activity: activityResponse}
