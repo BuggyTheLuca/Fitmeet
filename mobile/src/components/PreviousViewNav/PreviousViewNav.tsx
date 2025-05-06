@@ -1,6 +1,7 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
 import { CaretLeft } from "phosphor-react-native";
+import { useRefreshContext } from "../../contexts/refreshContext";
 
 interface PreviousViewNavProps{
     onClick?: () => void
@@ -8,11 +9,13 @@ interface PreviousViewNavProps{
 
 export default function PreviousViewNav ({onClick}: PreviousViewNavProps){
     const navigation = useCustomNavigation()
+    const {triggerRefresh} = useRefreshContext()
 
     const handleClick = () => {
-        if(onClick)
+        if(onClick){
             onClick()
-        else
+            triggerRefresh()
+        }else
             navigation.goBack()
     }
 

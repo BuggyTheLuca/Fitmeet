@@ -18,11 +18,15 @@ import Map from "../../components/Map/Map";
 import { CustomButton } from "../../components/CustomButton/CustomButton";
 import { Input } from "../../components/Input/Input";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
+import { useRefreshContext } from "../../contexts/refreshContext";
+import KeyboardAvoidingContent from "../../components/KeyboardAvoidingContent/KeyboardAvoidingContent";
 
 
 type ActivityDetailsRouteProp = RouteProp<MainStackParamList, 'ActivityDetails'>;
 
 export function ActivityDetails(){
+
+    const {shouldRefresh, triggerRefresh} = useRefreshContext()
     const {auth: {loggedUser}} = useAppContext()
     const route = useRoute<ActivityDetailsRouteProp>();
     const { activity } = route.params;
@@ -39,12 +43,31 @@ export function ActivityDetails(){
     const [confirmationCode, setConfirmationCode] = useState<string>()
     const [confirmationCodeError, setConfirmationCodeError] = useState(false);
 
-    const {getActivityParticipants, approve, subscribe, unsubscribe} = useActivity()
+    const {getActivityParticipants, approve, subscribe, unsubscribe, checkIn, conclude} = useActivity()
 
 
     useEffect(() => {
+        const currentDate = new Date();
+        const scheduledDate = new Date(activity.scheduledDate);
 
-    }, [activity])
+        const isSameDay =
+            currentDate.getFullYear() === scheduledDate.getFullYear() &&
+            currentDate.getMonth() === scheduledDate.getMonth() &&
+            currentDate.getDate() === scheduledDate.getDate();
+
+        const isCurrentTimeAfterScheduled =
+            isSameDay && currentDate.getTime() > scheduledDate.getTime() && !activity.completedAt;
+
+        if (isSameDay) {
+            setIsActivityDay(true)
+        }
+
+        if(isCurrentTimeAfterScheduled){
+            setIsActivityOccurring(true)
+        }
+
+
+    }, [activity, shouldRefresh])
 
 
     useEffect(() => {
@@ -58,7 +81,7 @@ export function ActivityDetails(){
                 showErrorToast("Erro!", 'Erro ao buscar participantes.')
             }
         })
-    }, [getActivityParticipants])
+    }, [getActivityParticipants, shouldRefresh])
 
     function getIsCreator(){
         if(!loggedUser) return false;
@@ -91,28 +114,55 @@ export function ActivityDetails(){
 
     const handleSubscribeClick = () => {
         subscribe(activity.id).then(data => {
-            console.log(data)
+            if(data.status == 201){
+                triggerRefresh()
+                showSuccessToast(data.message)
+            }
         })
     }
 
     const handleUnsubscribeClick = () => {
         unsubscribe(activity.id).then(data => {
-            console.log(data)
+            if(data.status == 200){
+                triggerRefresh()
+                showSuccessToast(data.response.message)
+            }
         })
     }
 
     const handleCheckInClick = () => {
-        console.log('check-in')
+        if(!confirmationCode || confirmationCode.length < 1){
+            setConfirmationCodeError(true)
+            return;
+        }
+        checkIn(activity.id, confirmationCode).then(data => {
+            if(data.status == 200){
+                triggerRefresh()
+                showSuccessToast(data.response.message)
+            }else{
+                showErrorToast('Erro ao fazer check-in', data.error)
+                setConfirmationCodeError(true)
+            }
+        })
     }
 
     const handleConcludeActivityClick = () => {
-        console.log('conclude')
+        conclude(activity.id).then(data => {
+            if(data.status == 200){
+                triggerRefresh()
+                showSuccessToast(data.response.message)
+                navigation.goBack()
+            }else{
+                showErrorToast('Erro ao fazer check-in', data.error)
+                setConfirmationCodeError(true)
+            }
+        })
     }
 
     const handleApproveClick = (request: {approved: boolean, participantId: string}) => {
         approve(activity.id, request).then(data => {
-            console.log(data)
             if(data.status == 200){
+                triggerRefresh()
                 showSuccessToast(data.message)
             }
         })
@@ -120,7 +170,6 @@ export function ActivityDetails(){
 
 
     return(
-        <>
             <ScrollableScreen>
                 <PreviousViewNav/>
                 <ImageBackground style={styles.activityImage} source={{uri: fixUrl(activity.image)}}
@@ -152,17 +201,17 @@ export function ActivityDetails(){
                 </ImageBackground>
                 <View style={styles.activityData}>
                     {(isCreator && (isActivityDay || isActivityOccurring)) &&
-                        <View>
+                        <View style={{backgroundColor: colors.lightGrey, borderRadius: 10, gap: 10, padding: 10, marginVertical: 15}}>
                             <CustomText>Código de confirmação</CustomText>
-                            <View>
-                                <CustomText>{activity.confirmationCode}</CustomText>
+                            <View style={{alignItems: 'center'}}>
+                                <CustomText style={{color: colors.grey}}>{activity.confirmationCode}</CustomText>
                             </View>
                         </View>
                     }
-                    {(isParticipant && (isActivityDay || isActivityOccurring)) &&
-                        <View>
+                    {(isParticipant && (isActivityDay || isActivityOccurring) && !userAsParticipant?.confirmedAt) &&
+                        <View style={{borderRadius: 10, padding: 10, marginVertical: 15}}>
                             <Input.Root isError={confirmationCodeError}>
-                                <Input.Label required>Título</Input.Label>
+                                <Input.Label required>Código de confirmação</Input.Label>
                                 <Input.Input
                                     value={confirmationCode}
                                     onChangeText={(text) => {
@@ -172,10 +221,12 @@ export function ActivityDetails(){
                                     autoCapitalize='none'
                                 />
                                 <Input.ErrorMessage style={{ marginTop: 6 }}>
-                                    Campo obrigatório
+                                    {!confirmationCode || confirmationCode.length < 1 ? 'Campo obrigatório' : 'Código inválido'}
                                 </Input.ErrorMessage>
                             </Input.Root>
-                            <CustomButton type="primary" text="Confirmar presença" onClick={handleCheckInClick}/>
+                            <View style={{flexDirection: 'row', justifyContent: "center"}}>
+                                <CustomButton type="primary" text="Confirmar presença" onClick={handleCheckInClick}/>
+                            </View>
                         </View>
                     }
                     <View>
@@ -235,7 +286,7 @@ export function ActivityDetails(){
                 </View>
                 <View style={{width: '80%', flexDirection: 'column', alignItems: 'center', marginBottom: 30}}>
                     {canParticipate() && <CustomButton type="primary" text="Participar" onClick={handleSubscribeClick}/>}
-                    {isParticipant && (() => {
+                    {isParticipant && !userAsParticipant?.confirmedAt && (() => {
                         switch (userAsParticipant?.subscriptionStatus) {
                             case 'APPROVED':
                                 return <CustomButton type="primary" text="Sair" onClick={handleUnsubscribeClick} />;
@@ -252,7 +303,6 @@ export function ActivityDetails(){
                     }
                 </View>
             </ScrollableScreen>
-        </>
     )
 }
 

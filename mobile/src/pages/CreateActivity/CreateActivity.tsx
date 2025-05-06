@@ -15,12 +15,16 @@ import CustomText from "../../components/CustomText/CustomText";
 import { useActivity } from "../../hooks/useActivity";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
 import { showErrorToast, showSuccessToast } from "../../services/toastService/toastService";
+import { useRefreshContext } from "../../contexts/refreshContext";
+import KeyboardAvoidingContent from "../../components/KeyboardAvoidingContent/KeyboardAvoidingContent";
 
 
 const defaultImagePath = '../../assets/images/profile-edit.png';
 const defaultImage = require(defaultImagePath);
 
 export function CreateActivity() {
+
+    const {triggerRefresh} = useRefreshContext()
 
     const [title, setTitle] = useState('');
     const [titleError, setTitleError] = useState(false);
@@ -155,6 +159,7 @@ export function CreateActivity() {
             setNewActivity(formData).then(data => {
                 if(data.status == 201){
                     navigation.goBack()
+                    triggerRefresh()
                     showSuccessToast('Atividade criada com sucesso!')
                 }
                 if(data.error){
@@ -168,7 +173,7 @@ export function CreateActivity() {
     }
 
     return (
-        <>
+        <KeyboardAvoidingContent>
             <ScrollableScreen>
                 <PreviousViewNav/>
                 <Title style={{marginTop: 40}}>
@@ -278,7 +283,7 @@ export function CreateActivity() {
                     <CustomButton type="primary" text="Salvar" onClick={handleSaveActivity}/>
                 </View>
             </ScrollableScreen>
-        </>
+        </KeyboardAvoidingContent>
     )
 }
 

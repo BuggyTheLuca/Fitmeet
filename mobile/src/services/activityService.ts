@@ -128,17 +128,44 @@ export async function subscribeInActivity(activityId: string){
 }
 
 export async function checkInToActivity(activityId: string, confirmationCode: string){
-    const res = await api.put(`/activities/${activityId}/check-in`, JSON.stringify({confirmationCode: confirmationCode}), { isProtected: true });
+    try{
+        const res = await api.put(`/activities/${activityId}/check-in`, JSON.stringify({confirmationCode: confirmationCode}), { isProtected: true });
 
-    const participant: Participant = await res.data;
-    return { status: res.status, participant };
+        const response: any = await res.data;
+        return { status: res.status, response };
+    }catch (error: any) {
+        if (error.response) {
+            const { status, data } = error.response;
+            return { status, ...data };
+        } else {
+            console.log('Erro sem resposta do servidor', error);
+            throw error;
+        }
+    }
+}
+
+export async function concludeActivity(activityId: string){
+    try{
+        const res = await api.put(`/activities/${activityId}/conclude`, undefined, { isProtected: true });
+
+        const response: any = await res.data;
+        return { status: res.status, response };
+    }catch (error: any) {
+        if (error.response) {
+            const { status, data } = error.response;
+            return { status, ...data };
+        } else {
+            console.log('Erro sem resposta do servidor', error);
+            throw error;
+        }
+    }
 }
 
 export async function unsubscribeFromActivity(activityId: string){
     const res = await api.delete(`/activities/${activityId}/unsubscribe`, { isProtected: true });
 
-    const participant: Participant = await res.data;
-    return { status: res.status, participant };
+    const response = await res.data;
+    return { status: res.status, response };
 }
 
 export async function deactivateActivity(activityId: string){

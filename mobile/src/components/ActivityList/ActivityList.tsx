@@ -11,6 +11,7 @@ import { Pageable } from "../../types/pageable";
 import { useActivity } from "../../hooks/useActivity";
 import { defaultPageable } from "../../utils/defaultPageable";
 import { colors } from "../../assets/styles/colors";
+import { useRefreshContext } from "../../contexts/refreshContext";
 
 interface activityListProps{
     title: string,
@@ -24,6 +25,8 @@ export default function ActivityList ({title, type, onClick, responseType, pagea
 
     const [isCollapsed, setCollapsed] = useState((type == "collapse"))
     const [activities, setActivities] = useState<ActivityResponse[]>([])
+
+    const {shouldRefresh} = useRefreshContext()
 
     const {getActivitiesParticipating, getActivitiesCreated, getActivities} = useActivity()
 
@@ -46,7 +49,7 @@ export default function ActivityList ({title, type, onClick, responseType, pagea
             if (data) setActivities(data.activityPage.activities);
         });
     
-    }, [getActivitiesCreated, getActivitiesParticipating, getActivities, responseType, pageable])
+    }, [getActivitiesCreated, getActivitiesParticipating, getActivities, responseType, pageable, shouldRefresh])
 
 
     return (

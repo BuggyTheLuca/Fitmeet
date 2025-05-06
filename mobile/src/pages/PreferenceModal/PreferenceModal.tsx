@@ -7,6 +7,7 @@ import { CustomButton } from "../../components/CustomButton/CustomButton";
 import PreviousViewNav from "../../components/PreviousViewNav/PreviousViewNav";
 import { useUser } from "../../hooks/useUser";
 import { showSuccessToast } from "../../services/toastService/toastService";
+import { useRefreshContext } from "../../contexts/refreshContext";
 
 interface PreferenceModalProps{
     onClose: () => void,
@@ -15,6 +16,8 @@ interface PreferenceModalProps{
 }
 
 export function PreferenceModal({onClose, closeType, preferences}: PreferenceModalProps){
+
+    const {triggerRefresh} = useRefreshContext()
 
     const [selectedTypes, setSelectedTypes] = useState<string[]>([])
 
@@ -37,6 +40,7 @@ export function PreferenceModal({onClose, closeType, preferences}: PreferenceMod
         setPreferences(selectedTypes).then(data => {
             if(data.message){
                 showSuccessToast(data.message)
+                triggerRefresh()
                 onClose()
             }
         })

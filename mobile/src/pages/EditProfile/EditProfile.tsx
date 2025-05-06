@@ -22,10 +22,13 @@ import { Preference, UserResponse } from "../../types/user";
 import { Camera, NotePencil } from "phosphor-react-native";
 import TypeList from "../../components/TypeList/TypeList";
 import { PreferenceModal } from "../PreferenceModal/PreferenceModal";
+import { useRefreshContext } from "../../contexts/refreshContext";
 
 const { width } = Dimensions.get('window');
 
 export default function EditProfile(){
+
+    const {triggerRefresh} = useRefreshContext()
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -126,6 +129,7 @@ export default function EditProfile(){
             registerUser(data).then(data => {
                 if(data.status == 201 && data.message){
                     showSuccessToast(data.message)
+                    triggerRefresh()
                     navigation.navigate('Login')
                 }else if (data.error){
                     showErrorToast('Houve um Erro', data.error)

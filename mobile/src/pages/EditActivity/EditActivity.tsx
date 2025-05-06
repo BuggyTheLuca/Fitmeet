@@ -18,11 +18,15 @@ import { useActivity } from "../../hooks/useActivity";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
 import { showErrorToast, showSuccessToast } from "../../services/toastService/toastService";
 import { fixUrl } from "../../utils/fix-url";
+import { useRefreshContext } from "../../contexts/refreshContext";
+import KeyboardAvoidingContent from "../../components/KeyboardAvoidingContent/KeyboardAvoidingContent";
 
 
 type EditActivityRouteProp = RouteProp<MainStackParamList, 'EditActivity'>;
 
 export function EditActivity(){
+
+    const {triggerRefresh} = useRefreshContext()
 
     const route = useRoute<EditActivityRouteProp>();
     const { activity } = route.params;
@@ -159,6 +163,7 @@ export function EditActivity(){
                 console.log(data)
                 if(data.status == 200){
                     navigation.goBack()
+                    triggerRefresh()
                     showSuccessToast(data.response.message)
                 }
             })
@@ -176,6 +181,7 @@ export function EditActivity(){
             updateActivity(formData, activity.id).then(data => {
                 if(data.status == 200){
                     navigation.goBack()
+                    triggerRefresh()
                     showSuccessToast('Atividade atualizada com sucesso!')
                 }
             })
@@ -186,7 +192,6 @@ export function EditActivity(){
     }
 
     return (
-        <>
             <ScrollableScreen>
                 <PreviousViewNav/>
                 <Title style={{marginTop: 40}}>
@@ -300,7 +305,6 @@ export function EditActivity(){
                     <CustomButton text="Cancelar atividade" onClick={handleCancelActivity}/>
                 </View>
             </ScrollableScreen>
-        </>
     )
 }
 

@@ -11,7 +11,8 @@ import { createActivity,
          checkInToActivity,
          unsubscribeFromActivity, 
          deactivateActivity,
-         approveParticipant} from "../services/activityService";
+         approveParticipant,
+         concludeActivity} from "../services/activityService";
 
 export function useActivity() {
 
@@ -26,6 +27,11 @@ export function useActivity() {
 
     const updateActivity = useCallback(async (activity: FormData, activityId: string) => {
       return await updateActivityData(activity, activityId)
+
+    }, [])
+
+    const conclude = useCallback(async (activityId: string) => {
+      return await concludeActivity(activityId)
 
     }, [])
 
@@ -80,6 +86,7 @@ export function useActivity() {
         unsubscribe,
         checkIn,
         deleteActivity,
-        approve
+        approve,
+        conclude
     }
 }

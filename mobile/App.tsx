@@ -8,12 +8,15 @@
 import Toast from "react-native-toast-message";
 import { AppStateProvider } from "./src/contexts/AppState";
 import AppRoutes from "./src/routes/AppRoutes";
+import { RefreshProvider } from "./src/contexts/refreshContext";
 
 function App(): React.JSX.Element {
   return (
     <AppStateProvider>
-      <AppRoutes/>
-      <Toast autoHide={true} visibilityTime={2000} />
+      <RefreshProvider>
+        <AppRoutes/>
+        <Toast autoHide={true} visibilityTime={2000} />
+      </RefreshProvider>
     </AppStateProvider>
   );
 }
