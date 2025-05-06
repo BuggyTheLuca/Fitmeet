@@ -7,12 +7,15 @@ import { fonts } from "../../assets/styles/fonts";
 import { formatDate } from "../../utils/format-date";
 import React, { useEffect, useState } from "react";
 import { CaretDown, CaretUp, LockSimple } from "phosphor-react-native";
-import { Pageable } from "../../types/pageable";
+import { ActivityPage, Pageable } from "../../types/pageable";
 import { useActivity } from "../../hooks/useActivity";
 import { defaultPageable } from "../../utils/defaultPageable";
 import { colors } from "../../assets/styles/colors";
 import { useRefreshContext } from "../../contexts/refreshContext";
+import { CustomButton } from "../CustomButton/CustomButton";
 
+
+//<Button onClick={handleSeeMore}>Ver mais</Button>
 interface activityListProps{
     title: string,
     type?: 'link' | 'collapse' | undefined,
@@ -25,6 +28,7 @@ export default function ActivityList ({title, type, onClick, responseType, pagea
 
     const [isCollapsed, setCollapsed] = useState((type == "collapse"))
     const [activities, setActivities] = useState<ActivityResponse[]>([])
+    const [activityPage, setActivitiesPage] = useState<ActivityPage>()
 
     const {shouldRefresh} = useRefreshContext()
 
@@ -33,23 +37,58 @@ export default function ActivityList ({title, type, onClick, responseType, pagea
     useEffect(() => {
         if (responseType === 'created') {
             getActivitiesCreated(pageable).then(data => {
-                if (data) setActivities(data.activityPage.activities);
+                if (data) {
+                    setActivities(data.activityPage.activities);
+                    setActivitiesPage(data.activityPage)
+                }
             });
             return;
         }
     
         if (responseType === 'participating') {
             getActivitiesParticipating(pageable).then(data => {
-                if (data) setActivities(data.activityPage.activities);
+                if (data) {
+                    setActivities(data.activityPage.activities);
+                    setActivitiesPage(data.activityPage)
+                }
             });
             return;
         }
     
         getActivities(pageable).then(data => {
-            if (data) setActivities(data.activityPage.activities);
+            if (data) {
+                setActivities(data.activityPage.activities);
+                setActivitiesPage(data.activityPage)
+            }
         });
     
     }, [getActivitiesCreated, getActivitiesParticipating, getActivities, responseType, pageable, shouldRefresh])
+
+    const handleSeeMore = () => {
+        const currentPage = activityPage;
+        if(!currentPage) return;
+
+        const nextPage = currentPage.pageSize / defaultPageable.pageSize + 1;
+
+        const newPageable: Pageable = {
+            page: nextPage,
+            pageSize: pageable.pageSize,
+            filter: pageable.filter
+        };
+
+        getActivities(newPageable)?.then((data) => {
+            if(data && data.status == 200) {
+                const newPage: ActivityPage = {
+                    ...currentPage,
+                    pageSize: currentPage.pageSize + data.activityPage.pageSize,
+                    activities: [...currentPage.activities, ...data.activityPage.activities],
+                    page: 1
+                };
+                setActivitiesPage(newPage);
+                setActivities(newPage.activities)
+            }
+        });
+    }
 
 
     return (
@@ -114,6 +153,11 @@ export default function ActivityList ({title, type, onClick, responseType, pagea
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 30 }}
             />}
+            {activityPage ? activityPage.activities.length < activityPage.totalActivities ? <View style={{width: '100%',flexDirection: 'row', justifyContent: 'center'}}>
+                <CustomButton text="Ver mais..." onClick={handleSeeMore}/>
+            </View>
+             : null : null}
+            
         </View>
     )
 }
