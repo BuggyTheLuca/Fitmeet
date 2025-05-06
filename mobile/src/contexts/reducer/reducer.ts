@@ -4,6 +4,7 @@ import { AppState } from "../state/state";
 export enum ActionTypes {
     LOGIN = 'LOGIN',
     LOGOUT = 'LOGOUT',
+    UPDATE_USER = 'UPDATE_USER',
 }
 
 interface Action {
@@ -34,6 +35,14 @@ export const reducer = (state: AppState, action: Action) => {
                     token: undefined,
                     isAuthenticated: false,
                     isLoading: false,
+                }
+            }
+        case ActionTypes.UPDATE_USER:
+            return {
+                ...state,
+                auth: {
+                    ...state.auth,
+                    loggedUser: action.payload.loggedUser,
                 }
             }
         default:

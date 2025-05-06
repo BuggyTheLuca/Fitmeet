@@ -97,6 +97,15 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
         }
     }, []);
 
+    const updateUser = useCallback(async (user: any) => {
+        try {
+            await storageAuthData(state.auth.token!, user);
+            dispatch({ type: ActionTypes.UPDATE_USER, payload: { loggedUser: user } });
+        } catch (error) {
+            console.log(error);
+        }
+    }, [state.auth.token]);
+
     return (
         <AppContext.Provider
             value={{
@@ -104,7 +113,8 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
                 auth: {
                     ...state.auth,
                     login,
-                    logout
+                    logout,
+                    updateUser
                 }
             }}
         >

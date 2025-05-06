@@ -34,17 +34,32 @@ export async function getUserData(){
 }
 
 export async function setUserAvatar(avatar: FormData){
-  const res = await api.put(`/user/avatar`,avatar, { isProtected: true });
+  const res = await api.put(`/user/avatar`, avatar, { 
+    isProtected: true,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Accept': 'application/json'
+  }});
 
   const response = await res.data
   return { status: res.status, error: response.error}
 }
 
-export async function updateUserData(userUpdated: FormData){
-  const res = await api.put(`/user/update`, userUpdated, { isProtected: true });
+export async function updateUserData(userUpdated: any){
+  try{
+    const res = await api.put(`/user/update`, userUpdated, { isProtected: true });
 
-  const response: UserResponse = await res.data
-  return { status: res.status,user: response}
+    const response: UserResponse = await res.data
+    return { status: res.status, user: response}
+  }catch (error: any) {
+    if (error.response) {
+        const { status, data } = error.response;
+        return { status, ...data };
+    } else {
+        console.log('Erro sem resposta do servidor', error);
+        throw error;
+    }
+  }
 }
 
 export async function deactivateUser(){

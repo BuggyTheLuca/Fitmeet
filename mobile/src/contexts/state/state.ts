@@ -6,6 +6,7 @@ interface AuthState {
     isAuthenticated: boolean;
     login: (email: string, password: string) => void;
     logout: () => void;
+    updateUser: (user: any) => void;
     isLoading: boolean;
 }
 
@@ -21,6 +22,7 @@ export const initialState: AppState = {
         isAuthenticated: false,
         login: (email: string, password: string) => {},
         logout: () => {},
+        updateUser: (user: any) => {},
         isLoading: true
     }
 }

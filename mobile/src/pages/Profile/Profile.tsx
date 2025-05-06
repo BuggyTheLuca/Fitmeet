@@ -11,12 +11,17 @@ import ActivityList from "../../components/ActivityList/ActivityList";
 import ScrollableScreen from "../../components/ScrollableScreen/ScrollableScreen";
 import { useCustomNavigation } from "../../hooks/useCustomNavigation";
 import ProfileCarousel from "../../components/ProfileCarousel/ProfileCarousel";
+import { useRefreshContext } from "../../contexts/refreshContext";
 
 export default function Profile(){
 
     const {auth: {loggedUser, logout}} = useAppContext()
 
+    const {shouldRefresh} = useRefreshContext()
+
     const navigation = useCustomNavigation()
+
+    useEffect(()=>{}, [loggedUser])
 
     const handleActivityClick = (activity: ActivityResponse) =>{
         navigation.navigate('ActivityDetails', {activity})

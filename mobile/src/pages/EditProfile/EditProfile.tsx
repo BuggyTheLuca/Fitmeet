@@ -23,12 +23,15 @@ import { Camera, NotePencil } from "phosphor-react-native";
 import TypeList from "../../components/TypeList/TypeList";
 import { PreferenceModal } from "../PreferenceModal/PreferenceModal";
 import { useRefreshContext } from "../../contexts/refreshContext";
+import ScrollableScreen from "../../components/ScrollableScreen/ScrollableScreen";
 
 const { width } = Dimensions.get('window');
 
 export default function EditProfile(){
 
     const {triggerRefresh} = useRefreshContext()
+
+    const {auth: {logout, updateUser: updateUserContext}} = useAppContext()
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -44,15 +47,13 @@ export default function EditProfile(){
     const [preferences, setPreferences] = useState<string[]>([]);
 
     const [image, setImage] = useState<Asset>();
-    const [imageError, setImageError] = useState(false)
 
     const [user, setUser] = useState<UserResponse>()
 
-    const {registerUser} = useAuth();
     
     const navigation = useCustomNavigation()
 
-    const {getUser, getPreferences} = useUser()
+    const {getUser, getPreferences, updateUser, updateAvatar, deleteUser} = useUser()
 
     useEffect(() => {
         getUser().then(data => {
@@ -95,7 +96,6 @@ export default function EditProfile(){
 
             if(response.assets && response.assets[0]){
                 setImage(response.assets[0]);
-                setImageError(false);
             }
         } catch (error) {
             console.error('Erro ao selecionar imagem:', error);
@@ -104,7 +104,6 @@ export default function EditProfile(){
     }
 
     async function handleSubmit() {
-
         try {
             let isError = false;
 
@@ -116,7 +115,7 @@ export default function EditProfile(){
                 setEmailError(true);
                 isError = true;
             }
-            if (password.length < 6) {
+            if (password.length < 6 && password.length > 0) {
                 setPasswordError(true);
                 isError = true;
             }
@@ -126,28 +125,52 @@ export default function EditProfile(){
             }
             if (isError) return;
             
-            registerUser(data).then(data => {
-                if(data.status == 201 && data.message){
-                    showSuccessToast(data.message)
-                    triggerRefresh()
-                    navigation.navigate('Login')
-                }else if (data.error){
-                    showErrorToast('Houve um Erro', data.error)
+            if(image){
+                const formData = new FormData()
+                formData.append('avatar', {
+                    uri: image.uri,
+                    type: image.type,
+                    name: image.fileName || 'image.jpg'
+                } as any);
+                const avatarResponse = await updateAvatar(formData)
+                if(avatarResponse.status == 200){
+                    showSuccessToast('Avatar atualizado com sucesso!')
+                }else if (avatarResponse.error){
+                    showErrorToast('Houve um Erro', avatarResponse.error)
                 }
-            })
+            }
+
+            const userResponse = await updateUser(data)
+            if(userResponse.status == 200){
+                const updatedUser = {
+                    ...user,
+                    name: data.name,
+                    email: data.email
+                }
+                updateUserContext(updatedUser)
+                showSuccessToast('Dados atualizados com sucesso')
+                triggerRefresh()
+                navigation.navigate('Profile')
+            }else if (userResponse.error){
+                showErrorToast('Houve um Erro', userResponse.error)
+            }
 
         } catch (error: any) {
             showErrorToast('Houve um Erro', error.message);
         }
-
     };
 
     const handleDeleteAccount = () => {
-
+        deleteUser().then(data => {
+            if(data.status == 200){
+                showSuccessToast('Conta desativada!')
+                logout()
+            }
+        })
     }
 
     return (
-        <KeyboardAvoidingContent>
+        <ScrollableScreen>
             <PreviousViewNav/>
             <SafeAreaView style={defaultStyles.screen}>
                 <Modal  animationType="fade"
@@ -248,7 +271,7 @@ export default function EditProfile(){
                     </View>
                 </View>
             </SafeAreaView>
-        </KeyboardAvoidingContent>
+        </ScrollableScreen>
     )
 }
 

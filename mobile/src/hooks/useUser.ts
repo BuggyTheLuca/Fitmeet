@@ -34,7 +34,7 @@ export function useUser() {
       
     }, [])
 
-    const updateUser = useCallback(async (userUpdated: FormData) => {
+    const updateUser = useCallback(async (userUpdated: any) => {
     
       return await updateUserData(userUpdated)
 
